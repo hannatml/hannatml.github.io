@@ -19,16 +19,18 @@
 
   <style>
     :root{
-      --ink:#1a1a1a;
-      --sub:#4b4b4b;
-      --green:#4a5d23;
-      --accent:#5e7f3a;
-      --accent-2:#87b35c;
+      --ink:#1a1a1a; --sub:#4b4b4b;
+      --green:#4a5d23; --accent:#5e7f3a; --accent-2:#87b35c;
 
       --cat-grey-sleep:url('tobi-asleep.png');
       --cat-grey-awake:url('tobi-awake.png');
       --cat-white-sleep:url('kono-chillin.png');
       --cat-white-ears:url('kono-happy.png');
+
+      /* Cat sizing + overlap controls */
+      --catW: 196px;         /* bigger cats */
+      --catH: 108px;
+      --catOverlap: -18px;   /* pull them closer together visually */
     }
 
     html,body{height:100%}
@@ -40,16 +42,15 @@
         radial-gradient(900px 560px at 18% 12%, #eefbe0 0%, #ffffff 60%),
         radial-gradient(1000px 640px at 86% 36%, #f2ffee 0%, #ffffff 65%),
         #fff;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
+      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
     }
 
     /* Center the entire content block both ways */
     .page{
       min-height:100dvh;
       display:grid;
-      place-items:center;       /* centers the .wrap vertically & horizontally */
-      padding:32px 0;           /* small breathing room */
+      place-items:center;
+      padding:32px 0;
       box-sizing:border-box;
     }
 
@@ -57,13 +58,11 @@
     .wrap{
       width:min(1100px, calc(100% - 64px));
       margin:0 auto;
-      display:flex;
-      flex-direction:column;
-      align-items:flex-start;   /* keep inner content left-aligned */
+      display:flex; flex-direction:column; align-items:flex-start;
       gap:16px;
     }
 
-    /* Howdy pill (restored) */
+    /* Howdy pill */
     .badge{
       display:inline-flex; align-items:center; gap:.5ch;
       font-size:.95rem; color:var(--sub);
@@ -74,18 +73,14 @@
     /* Header */
     h1{
       font-family:"Akaya Telivigala", system-ui;
-      font-weight:400;
-      font-size:2.6em;
-      line-height:1.12;
+      font-weight:400; font-size:2.6em; line-height:1.12;
       color:var(--green);
-      margin:8px 0 6px;
-      max-width:56rem;      /* controls line breaks like in your mock */
-      text-align:left;
+      margin:8px 0 6px; text-align:left; max-width:56rem;
     }
 
     .lead{
       font-size:1.05rem; color:var(--sub);
-      margin:0 0 10px; text-align:left; max-width:56rem;
+      margin:0; text-align:left; max-width:56rem;
     }
     .lead a{ color:var(--accent); text-decoration:none; }
     .lead a:hover{ color:var(--accent-2); }
@@ -94,51 +89,44 @@
     .feature{
       position:relative;
       width:100%;
-      border:2px solid #000;
-      border-radius:22px;
-      padding:52px 28px 36px;  /* extra top padding under perched cats */
-      background:#fff;
-      overflow:visible;
+      border:2px solid #000; border-radius:22px;
+      padding:60px 28px 36px;  /* extra top padding under perched cats */
+      margin-top: clamp(28px, 6.5vw, 72px); /* keep cats from overlapping text */
+      background:#fff; overflow:visible;
     }
     .feature h2{
       font-size:1rem; text-align:center; margin:0 0 20px; color:var(--sub);
     }
 
-    /* Cats: really perched, really close together */
+    /* Cats: perched and truly close together (accounting for PNG whitespace) */
     .cats{
-      position:absolute;
-      top:-44px;               /* sit above the border, not inside */
+      position:absolute; top:calc(-1 * var(--catH) + 36px); /* perch above border */
       right:16px;
-      display:flex;
-      align-items:flex-end;
-      gap:2px;                 /* minimal spacing */
-      z-index:10;
+      display:flex; align-items:flex-end; gap:0; z-index:10;
     }
-    /* hide the border line under their paws so it looks natural */
+    /* slight white strip to hide the frame border under paws */
     .cats::after{
-      content:"";
-      position:absolute;
-      left:-8px; right:-8px;
-      bottom:-4px;             /* tiny overlap on the frame border */
-      height:8px;
-      background:#fff;
-      z-index:-1;
-      border-radius:999px;
-      pointer-events:none;
+      content:""; position:absolute; left:-6px; right:-6px; bottom:-4px; height:8px;
+      background:#fff; z-index:-1; pointer-events:none; border-radius:999px;
     }
 
     .cat{
       position:relative;
-      width:160px; height:88px;   /* unify visual size */
-      --y:0px;                     /* per-image bottom nudge to cancel PNG whitespace */
+      width:var(--catW); height:var(--catH);
+      --x: 0px;  /* per-image horizontal nudge (combats transparent side padding) */
+      --y: 0px;  /* per-image vertical nudge (combats transparent bottom) */
+      z-index:1;
     }
+    /* Overlap the second cat slightly to remove the “air gap” from PNG padding */
+    .cat + .cat{ margin-left: var(--catOverlap); }
+    .cat:hover{ z-index:2; } /* keep hover above overlap */
+
     .cat button{
       width:100%; height:100%;
       border:0; background:transparent; cursor:pointer;
       appearance:none; -webkit-appearance:none;
-      background-repeat:no-repeat;
-      background-size:contain;
-      background-position:center calc(100% + var(--y));
+      background-repeat:no-repeat; background-size:contain;
+      background-position: calc(50% + var(--x)) calc(100% + var(--y));
       outline:none; box-shadow:none; -webkit-tap-highlight-color:transparent;
     }
 
@@ -152,174 +140,4 @@
     .cat--white button:focus-visible{ background-image:var(--cat-white-ears); }
 
     /* Pills */
-    .chips{ display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
-    .chip{
-      background:#1f1f1f; color:#fff; font-size:.9rem;
-      padding:.35rem .65rem; border-radius:999px; white-space:nowrap;
-    }
-
-    .footer{ color:var(--sub); font-size:.9rem; margin-top:10px; }
-
-    /* Tobi click pop (spawns at click point) */
-    .boom{
-      position:absolute;
-      font-size:24px; line-height:1; pointer-events:none;
-      transform:translate(-50%,-50%) scale(.85);
-      animation:pop-fade .7s ease-out forwards;
-      filter:drop-shadow(0 1px 0 rgba(0,0,0,.12));
-    }
-    @keyframes pop-fade{
-      0%{ opacity:0; transform:translate(-50%,-50%) scale(.6) rotate(-8deg); }
-      20%{ opacity:1; transform:translate(-50%,-58%) scale(1.05) rotate(2deg); }
-      100%{ opacity:0; transform:translate(-50%,-90%) scale(1) rotate(0); }
-    }
-
-    /* Kono heart & thought bubble */
-    .heart{
-      position:absolute; left:50%; top:28%;
-      transform:translateX(-50%);
-      font-size:22px; line-height:1; opacity:0; pointer-events:none;
-    }
-    .heart.float{ animation:heart-up .85s ease-out forwards; }
-    @keyframes heart-up{
-      0%{ transform:translate(-50%,0) scale(.9); opacity:0; }
-      15%{ opacity:1; }
-      70%{ transform:translate(-50%,-28px) scale(1.08); }
-      100%{ transform:translate(-50%,-44px) scale(1); opacity:0; }
-    }
-
-    .thought{
-      position:absolute;
-      left:20%;
-      top:-14px;
-      background:#2f2f2f; color:#fff;
-      font-size:.9rem; line-height:1;
-      padding:6px 10px 7px;
-      border-radius:12px;
-      opacity:0; transform:translateY(6px) scale(.98);
-      pointer-events:none; white-space:nowrap; z-index:12;
-    }
-    .thought::after{
-      content:""; position:absolute; left:12px; bottom:-6px;
-      width:10px; height:10px; background:#2f2f2f;
-      transform:rotate(45deg); border-radius:2px;
-    }
-    .thought.show{ animation:riseIn .22s ease-out forwards, hold 2s linear .22s forwards, fadeOut .28s ease 2.22s forwards; }
-    @keyframes riseIn{ to{ opacity:1; transform:translateY(0) scale(1);} }
-    @keyframes hold{ to{ opacity:1; } }
-    @keyframes fadeOut{ to{ opacity:0; } }
-
-    /* Small screens */
-    @media (max-width:780px){
-      h1{ font-size:2.2em; max-width:42rem; }
-      .cat{ width:138px; height:76px; }
-      .cats{ right:10px; gap:2px; top:-38px; }
-      .feature{ padding-top:48px; }
-    }
-
-    /* Warm-up the hover sprites */
-    .preload{ position:absolute; left:-9999px; width:0; height:0; overflow:hidden;
-      background-image: var(--cat-grey-awake), var(--cat-white-ears);
-    }
-  </style>
-</head>
-<body>
-  <div class="preload" aria-hidden="true"></div>
-
-  <div class="page">
-    <main class="wrap">
-      <div class="badge">𐚁₊⊹ howdy, i’m hanna!</div>
-
-      <h1>austin-based designer uncovering intuitive + enjoyable experiences in complex systems.</h1>
-
-      <p class="lead">
-        currently at <a href="https://www.leveltenenergy.com/" target="_blank" rel="noopener">LevelTen Energy</a>.
-        previously: <a href="https://data.world/home/" target="_blank" rel="noopener">data.world</a>,
-        <a href="https://www.mcmaster.com/" target="_blank" rel="noopener">McMaster-Carr</a>.
-      </p>
-
-      <section class="feature">
-        <!-- Cats perched on the frame -->
-        <div class="cats" aria-hidden="true">
-          <!-- Tobi (grey) -->
-          <div class="cat cat--grey" style="--y:8px">
-            <button aria-label="grey cat — hover to wake, click to grumble"></button>
-          </div>
-
-          <!-- Kono (white) -->
-          <div class="cat cat--white" style="--y:10px">
-            <button aria-label="white cat — hover to perk ears, click for heart"></button>
-            <div class="heart" aria-hidden="true">❤️</div>
-            <div class="thought" aria-hidden="true"></div>
-          </div>
-        </div>
-
-        <h2>some things I especially like</h2>
-        <div class="chips" role="list" aria-label="interests">
-          <span class="chip" role="listitem">technical spaces</span>
-          <span class="chip" role="listitem">flexbox</span>
-          <span class="chip" role="listitem">inspect tools</span>
-          <span class="chip" role="listitem">inclusive design</span>
-          <span class="chip" role="listitem">sociological framing</span>
-          <span class="chip" role="listitem">non-traditional interfaces</span>
-          <span class="chip" role="listitem">systems design</span>
-          <span class="chip" role="listitem">my cats ≽^- ˓  -^≼</span>
-        </div>
-      </section>
-
-      <p class="footer">sept. 2025</p>
-    </main>
-  </div>
-
-  <script>
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    // Kono (white): float a heart on click
-    const white = document.querySelector('.cat--white');
-    const whiteBtn = white.querySelector('button');
-    const heart = white.querySelector('.heart');
-    whiteBtn.addEventListener('click', () => {
-      heart.classList.remove('float');
-      heart.style.left = (45 + Math.random()*10) + '%'; // small jitter
-      void heart.offsetWidth;
-      heart.classList.add('float');
-    });
-
-    // Tobi (grey): spawn a ⁉️ exactly where user clicks
-    const grey = document.querySelector('.cat--grey');
-    const greyBtn = grey.querySelector('button');
-    greyBtn.addEventListener('click', (e) => {
-      const box = greyBtn.getBoundingClientRect();
-      const x = e.clientX - box.left;
-      const y = e.clientY - box.top;
-      const span = document.createElement('span');
-      span.className = 'boom';
-      span.textContent = '⁉️';
-      span.style.left = x + 'px';
-      span.style.top  = y + 'px';
-      greyBtn.parentElement.appendChild(span);
-      span.addEventListener('animationend', () => span.remove(), {once:true});
-    });
-
-    // Kono: occasional thought bubble (no interaction)
-    const thought = white.querySelector('.thought');
-    const foods = ['🍣','🐟','🍗','🥟','🧀','🍤','🍜'];
-
-    function scheduleThought(){
-      const delay = 8000 + Math.random()*8000; // 8–16s
-      setTimeout(() => {
-        if (!thought) return;
-        thought.textContent = reduceMotion
-          ? '…'
-          : foods[Math.floor(Math.random()*foods.length)] + ' …dreaming…';
-        thought.classList.add('show');
-        setTimeout(() => {
-          thought.classList.remove('show');
-          scheduleThought();    // loop
-        }, 2500);
-      }, delay);
-    }
-    scheduleThought();
-  </script>
-</body>
-</html>
+    .chips{ display:flex; flex-wrap:wrap; gap:10px; justify-content:c
