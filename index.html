@@ -37,17 +37,17 @@
         radial-gradient(900px 560px at 18% 12%, #eefbe0 0%, #ffffff 60%),
         radial-gradient(1000px 640px at 86% 36%, #f2ffee 0%, #ffffff 65%),
         #fff;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
     }
 
-    .wrap{ max-width:1100px; margin:48px auto 80px; padding:0 24px; }
+    .wrap{ max-width:1100px; margin:48px auto 72px; padding:0 24px; }
 
     .badge{
       display:inline-flex; align-items:center; gap:.5ch;
       font-size:.95rem; color:var(--sub);
-      background:#fff; border:1.5px solid #000; border-radius:999px;
-      padding:.35rem .75rem; box-shadow:0 2px 0 #000;
+      background:#fff; border:2px solid #000; border-radius:999px;
+      padding:.35rem .75rem;
     }
 
     /* header text uses Akaya Telivigala */
@@ -67,92 +67,100 @@
     .lead a{ color:var(--accent); text-decoration:none; }
     .lead a:hover{ color:var(--accent-2); }
 
-    /* feature box the cats perch on */
+    /* simple single-border feature box */
     .feature{
-      position:relative; margin-top:28px;
-      border:2px solid #000; border-radius:22px;
-      padding:28px 28px 36px; background:#fff; box-shadow:0 6px 0 #000;
-      overflow:visible;
+      position:relative;
+      z-index:0;                 /* cats will sit above this */
+      margin-top:28px;
+      border:2px solid #000;     /* single border */
+      border-radius:22px;
+      padding:28px 28px 36px;
+      background:#fff;           /* no shadows = no double borders */
+      overflow:visible;          /* cats can hang over the edge */
     }
-    .feature h2{ font-size:1rem; text-align:center; margin:2px 0 18px; color:var(--sub); }
+    .feature h2{
+      font-size:1rem; text-align:center; margin:2px 0 18px; color:var(--sub);
+    }
 
     .chips{ display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
     .chip{ background:#1f1f1f; color:#fff; font-size:.9rem; padding:.35rem .65rem; border-radius:999px; }
 
-    /* cats cluster */
+    /* cats cluster (above the frame) */
     .cats{
       position:absolute; top:-34px; right:24px;
-      display:flex; gap:10px; z-index:3; pointer-events:none;
+      display:flex; gap:10px;
+      z-index:10;                /* above .feature */
+      pointer-events:auto;
     }
-    /* mask the border under the cats so they look seated on it */
+    /* mask the frame right under the cats to “sit” them on the line */
     .cats::after{
       content:""; position:absolute; left:8px; right:8px; bottom:-2px; height:6px;
-      background:#fff; z-index:-1;
+      background:#fff; z-index:-1; pointer-events:none;
     }
 
     .cat{
-      --w: 200px;    /* tweak overall size here */
+      --w: 200px;    /* overall size */
       --h: 106px;
-      --y-offset: 0px;  /* per-image bottom whitespace compensation */
+      --y-offset: 0px;  /* compensate for PNG bottom whitespace */
       width:var(--w); height:var(--h);
-      position:relative; pointer-events:auto; overflow:visible;
+      position:relative; z-index:11; overflow:visible;
     }
 
     .cat button{
       width:100%; height:100%;
+      position:relative; z-index:12;
       border:0; background:transparent; cursor:pointer;
       appearance:none; -webkit-appearance:none;
       background-repeat:no-repeat; background-size:contain;
-      /* anchor to bottom, then push bottom by --y-offset to counter PNG padding */
+      /* anchor to bottom, then push by --y-offset */
       background-position:center calc(100% + var(--y-offset));
       transition:background-image 0s, opacity .2s ease;
-      outline:none;               /* no default outline */
-      -webkit-tap-highlight-color: transparent;
+      outline:none; box-shadow:none;
+      -webkit-tap-highlight-color:transparent;
     }
-
-    /* ✅ no border on hover; only show a ring for keyboard users */
+    /* no borders on hover; ring only for keyboard users */
     .cat button:hover{ outline:none; box-shadow:none; }
     .cat button:focus{ outline:none; }
-    .cat button:focus-visible{
-      box-shadow:0 0 0 2px var(--accent-2);
-      border-radius:12px; /* subtle ring, not around the image itself */
-    }
+    .cat button:focus-visible{ box-shadow:0 0 0 2px var(--accent-2); border-radius:12px; }
 
-    /* grey cat hover → awake */
+    /* hover swaps */
     .cat--grey button{ background-image:var(--cat-grey-sleep); }
     .cat--grey button:hover,
     .cat--grey button:focus-visible{ background-image:var(--cat-grey-awake); }
 
-    /* ⁉️ anger mark as emoji, above ear */
-    .scribble{
-      position:absolute; z-index:4; pointer-events:none;
-      top:-26px; right:8px; font-size:44px; line-height:1;
-      opacity:0; transform-origin:bottom left;
-    }
-    .scribble.show{ animation:popFade .7s ease forwards; }
-
-    /* white cat hover → perk ears */
     .cat--white button{ background-image:var(--cat-white-sleep); }
     .cat--white button:hover,
     .cat--white button:focus-visible{ background-image:var(--cat-white-ears); }
 
-    /* ❤️ floating heart (emoji) */
+    /* overlays (emoji), never intercept pointer events */
+    .scribble, .heart, .thought { pointer-events:none; }
+
+    .scribble{
+      position:absolute; z-index:13;
+      top:-26px; right:8px;
+      font-size:44px; line-height:1; opacity:0;
+      transform-origin:bottom left;
+    }
+    .scribble.show{ animation:popFade .7s ease forwards; }
+
     .heart{
-      position:absolute; left:50%; top:22%;
-      transform:translateX(-50%);
-      font-size:26px; line-height:1; opacity:0; pointer-events:none; z-index:4;
+      position:absolute; z-index:13;
+      left:50%; top:22%; transform:translateX(-50%);
+      font-size:26px; line-height:1; opacity:0;
     }
     .heart.float{ animation:floatUp 900ms ease-out forwards; }
 
-    /* thought bubble with food text */
     .thought{
-      position:absolute; left:22%; top:-18px; z-index:4;
+      position:absolute; z-index:13;
+      left:22%; top:-18px;
       background:#2f2f2f; color:#fff; font-size:.9rem;
-      padding:6px 10px 7px; border-radius:12px; box-shadow:0 2px 6px rgba(0,0,0,.18);
-      opacity:0; transform:translateY(6px) scale(.98); pointer-events:none; white-space:nowrap;
+      padding:6px 10px 7px; border-radius:12px;
+      opacity:0; transform:translateY(6px) scale(.98);
+      white-space:nowrap;
     }
     .thought::after{
-      content:""; position:absolute; left:14px; bottom:-6px; width:10px; height:10px; background:#2f2f2f; transform:rotate(45deg); border-radius:2px;
+      content:""; position:absolute; left:14px; bottom:-6px;
+      width:10px; height:10px; background:#2f2f2f; transform:rotate(45deg); border-radius:2px;
     }
     .thought.show{ animation:riseIn .25s ease-out forwards, hold 2.2s linear .25s forwards, fadeOut .3s ease 2.45s forwards; }
 
@@ -205,7 +213,7 @@
       <div class="cats" aria-hidden="true">
         <!-- Grey cat (Tobi) -->
         <div class="cat cat--grey">
-          <!-- adjust --y-offset if your PNG has extra transparent bottom -->
+          <!-- Adjust --y-offset if PNG has bottom whitespace -->
           <button aria-label="grey cat — hover to wake, click to annoy" style="--y-offset: 10px;"></button>
           <div class="scribble" aria-hidden="true">⁉️</div>
         </div>
@@ -277,9 +285,7 @@
       scribble.classList.add('show');
     });
 
-    // Set initial images (hover swaps handled in CSS)
-    document.querySelector('.cat--grey button').style.backgroundImage = getComputedStyle(document.documentElement).getPropertyValue('--cat-grey-sleep');
-    document.querySelector('.cat--white button').style.backgroundImage = getComputedStyle(document.documentElement).getPropertyValue('--cat-white-sleep');
+    // CSS sets initial images; :hover handles swaps.
   </script>
 </body>
 </html>
