@@ -26,16 +26,17 @@
       --cat-white-sleep:url('kono-chillin.png');
       --cat-white-ears:url('kono-happy.png');
 
-      /* Bigger cats + precise overlap */
-      --catW: 228px;      /* cat width  (desktop)  */
-      --catH: 128px;      /* cat height (desktop)  */
-      --overlap: 72px;    /* how much the second cat overlaps the first */
-      --perchPad: 38px;   /* how much of the cat sits "inside" the frame */
+      /* Desktop defaults (scaled down at breakpoints) */
+      --catW: 228px;
+      --catH: 128px;
+      --overlap: 92px;   /* how much white overlaps grey (closes the visual gap) */
+      --perchPad: 40px;  /* how much of each cat sits "inside" the frame */
+      --sidePad: 32px;   /* page side padding for equal margins */
     }
 
     html,body{height:100%}
+    html,body{margin:0}
     body{
-      margin:0;
       font-family:"Sour Gummy",system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
       color:var(--ink);
       background:
@@ -43,6 +44,7 @@
         radial-gradient(1000px 640px at 86% 36%, #f2ffee 0%, #ffffff 65%),
         #fff;
       -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+      overflow-x:hidden; /* belt-and-suspenders */
     }
 
     /* Center the whole content block */
@@ -50,15 +52,18 @@
       min-height:100dvh;
       display:grid;
       place-items:center;
-      padding:32px 0;
+      padding-block:32px;
       box-sizing:border-box;
     }
 
     .wrap{
-      width:min(1100px, calc(100% - 64px));
-      margin:0 auto;
-      display:flex; flex-direction:column; align-items:flex-start;
-      gap:16px;
+      width:100%;
+      max-width:1100px;
+      margin-inline:auto;
+      padding-inline:var(--sidePad);   /* equal L/R margins without calc() */
+      box-sizing:border-box;
+      display:flex; flex-direction:column; align-items:flex-start; gap:16px;
+      overflow-x:clip; /* prevent absolutely-positioned children from causing scroll */
     }
 
     /* Howdy pill */
@@ -84,48 +89,48 @@
       position:relative;
       width:100%;
       border:2px solid #000; border-radius:22px;
-      padding:60px 28px 36px;            /* breathing room inside */
-      /* Dynamic spacing above: equals how much cat sticks out plus a base */
-      margin-top: max(28px, calc((var(--catH) - var(--perchPad)) + 16px));
-      background:#fff; overflow:visible;
+      padding:60px 28px 36px;
+      /* Space above scales with cat size so they never hit the lead text */
+      margin-top: max(28px, calc((var(--catH) - var(--perchPad)) + 18px));
+      background:#fff;
+      overflow:visible; /* allow cats to perch above */
     }
     .feature h2{ font-size:1rem; text-align:center; margin:0 0 20px; color:var(--sub); }
 
-    /* CAT LAYER
-       We stop fighting PNG padding by using absolute positions + explicit overlap.
-       Container width = catW + (catW - overlap). */
+    /* CAT LAYER — absolutely positioned, width constrained to column */
     .cats{
       position:absolute;
-      top: calc(-1 * (var(--catH) - var(--perchPad))); /* perch on border */
-      right:16px;
-      width: calc(var(--catW) * 2 - var(--overlap));
+      /* Perch above the top border by the portion that sits outside the box */
+      top: calc(-1 * (var(--catH) - var(--perchPad)));
+      right: max(12px, min(16px, 3.5vw));  /* responsive right inset */
+      /* Container width must fit inside the column to avoid horizontal scroll */
+      width: min( calc(100% - var(--sidePad)*2 - 56px),
+                  calc(var(--catW) * 2 - var(--overlap)) );
       height: var(--catH);
       z-index:10;
     }
-    /* tiny white strip to hide the frame border under paws */
+    /* subtle mask so the border line doesn't run through their paws */
     .cats::after{
       content:""; position:absolute; left:-6px; right:-6px; bottom:-4px; height:8px;
       background:#fff; z-index:-1; pointer-events:none; border-radius:999px;
     }
 
+    /* Place each cat with explicit overlap—independent of PNG whitespace */
     .cat{
       position:absolute; bottom:0;
       width:var(--catW); height:var(--catH);
-      --x:0px; --y:0px; /* per-image nudge (for PNG whitespace) */
+      --x:0px; --y:0px; /* per-image nudge for internal whitespace */
     }
-    .cat--grey{ left:0;  transform:translateX(var(--x)); }
-    .cat--white{ left: calc(var(--catW) - var(--overlap)); transform:translateX(var(--x)); }
+    .cat--grey { left:0; }
+    .cat--white{ left: calc(var(--catW) - var(--overlap)); }
 
     .cat button{
       width:100%; height:100%;
       border:0; background:transparent; cursor:pointer;
-      appearance:none; -webkit-appearance:none;
       background-repeat:no-repeat; background-size:contain;
-      background-position: calc(50%) calc(100% + var(--y));
+      background-position: calc(50% + var(--x)) calc(100% + var(--y));
       outline:none; box-shadow:none; -webkit-tap-highlight-color:transparent;
     }
-
-    /* Hover swaps */
     .cat--grey  button{ background-image:var(--cat-grey-sleep); }
     .cat--grey  button:hover, .cat--grey  button:focus-visible{ background-image:var(--cat-grey-awake); }
     .cat--white button{ background-image:var(--cat-white-sleep); }
@@ -179,16 +184,24 @@
     @keyframes hold{ to{ opacity:1; } }
     @keyframes fadeOut{ to{ opacity:0; } }
 
-    /* Responsive knobs: keep them big but fitting; overlap maintained */
+    /* Tablet */
     @media (max-width:780px){
-      :root{ --catW: 210px; --catH: 118px; --overlap: 68px; --perchPad: 36px; }
       h1{ font-size:2.2em; }
+      :root{ --catW: 200px; --catH: 112px; --overlap: 84px; --perchPad: 38px; }
       .feature{ padding-top:60px; }
       .heart{ font-size:22px; top:32%; }
       .thought{ left:62%; top:-16px; font-size:.9rem; }
     }
+
+    /* Narrow phones — guarantee the cats layer ALWAYS fits the column */
     @media (max-width:420px){
-      :root{ --catW: 180px; --catH: 102px; --overlap: 56px; --perchPad: 34px; }
+      :root{
+        --catW: 168px;         /* still bigger than earlier, but fits */
+        --catH: 98px;
+        --overlap: 76px;       /* strong overlap to remove the visual gap */
+        --perchPad: 34px;
+        --sidePad: 28px;       /* slightly tighter side padding on tiny screens */
+      }
       .feature{ padding-top:58px; }
       .thought{ left:60%; }
     }
@@ -218,12 +231,11 @@
         <!-- Cats perched and overlapped -->
         <div class="cats" aria-hidden="true">
           <!-- Tobi (grey) -->
-          <div class="cat cat--grey" style="--x:6px; --y:12px">
+          <div class="cat cat--grey" style="--x:10px; --y:12px">
             <button aria-label="grey cat — hover to wake, click to grumble"></button>
           </div>
-
           <!-- Kono (white) -->
-          <div class="cat cat--white" style="--x:-4px; --y:12px">
+          <div class="cat cat--white" style="--x:-10px; --y:12px">
             <button aria-label="white cat — hover to perk ears, click for heart"></button>
             <div class="heart" aria-hidden="true">❤️</div>
             <div class="thought" aria-hidden="true"></div>
