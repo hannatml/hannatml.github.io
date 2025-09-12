@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Akaya+Telivigala&family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet"/>
 
-  <!-- Preload cat images to prevent first-hover flash -->
+  <!-- Preload to stop first-hover flicker -->
   <link rel="preload" as="image" href="tobi-asleep.png">
   <link rel="preload" as="image" href="tobi-awake.png">
   <link rel="preload" as="image" href="kono-chillin.png">
@@ -31,7 +31,6 @@
       --cat-white-ears:  url('kono-happy.png');
     }
 
-    /* Full-bleed background */
     html,body{height:100%}
     body{
       margin:0;
@@ -43,28 +42,26 @@
         #fff;
       -webkit-font-smoothing:antialiased;
       -moz-osx-font-smoothing:grayscale;
-
-      /* You asked for a single-screen hero with no extra scroll */
-      overflow-y:hidden; /* prevents seeing random gradient below */
-      overflow-x:hidden;
     }
 
-    /* Center the page content inside the viewport */
-    .shell{
-      min-height:100vh;
-      display:grid;
-      place-items:start center;   /* horizontally centered, content starts near top */
-      padding:24px 0 16px;        /* small breathing room, still no scroll */
+    /* === Layout: center the entire content block on the page === */
+    .page{
+      min-height:100svh;               /* viewport fit */
+      display:flex;
+      justify-content:center;          /* center the block horizontally */
+      align-items:flex-start;          /* start near top */
+      padding:32px 0 48px;             /* breathable but not scrolly */
       box-sizing:border-box;
     }
 
-    /* Main column */
+    /* The centered block */
     .wrap{
-      width:min(1100px, calc(100% - 48px));
+      width:min(1100px, calc(100% - 64px));  /* centered max-width */
+      margin:0 auto;                         /* <-- key: center the block */
       display:flex;
       flex-direction:column;
-      align-items:center;         /* keep the block centered */
-      gap:18px;
+      align-items:flex-start;                /* content INSIDE is left-aligned */
+      gap:16px;
     }
 
     .badge{
@@ -74,60 +71,59 @@
       padding:.35rem .75rem;
     }
 
-    /* Header — larger, controlled wrap */
+    /* Header (bigger) */
     h1{
       font-family:"Akaya Telivigala", system-ui;
       font-weight:400;
-      font-size:2.6em;          /* larger header */
+      font-size:2.6em;         /* larger */
       line-height:1.12;
       color:var(--green);
-      margin:6px 0 4px;
-      max-width:56rem;          /* adjust to tune line breaks */
+      margin:8px 0 6px;
+      max-width:56rem;         /* controls line breaks (matches your mock) */
       text-align:left;
     }
 
     .lead{
       font-size:1.05rem; color:var(--sub);
-      margin:0 0 6px; text-align:left;
-      width:100%; max-width:56rem;
+      margin:0 0 10px; text-align:left;
+      max-width:56rem;
     }
     .lead a{ color:var(--accent); text-decoration:none; }
     .lead a:hover{ color:var(--accent-2); }
 
-    /* Interests frame — single border, centered */
+    /* Interests frame (simple single border) */
     .feature{
       position:relative;
-      width:min(1000px, 100%);
+      width:100%;
       border:2px solid #000;
       border-radius:22px;
       padding:34px 28px 36px;
       background:#fff;
-      overflow:visible;          /* cats sit on top edge */
+      overflow:visible;        /* cats sit on the top edge */
     }
     .feature h2{
       font-size:1rem; text-align:center; margin:0 0 20px; color:var(--sub);
     }
 
-    /* Cats perched on the top-right; closer and higher */
+    /* Cats: higher + closer, perched on top-right of the box */
     .cats{
       position:absolute;
-      top:-38px;                 /* move UP to align with border */
-      right:16px;                /* tuck a bit right */
+      top:-42px;               /* ↑ move UP to kiss the border */
+      right:14px;              /* tuck right */
       display:flex;
-      gap:4px;                   /* closer together */
+      gap:2px;                 /* closer together */
       z-index:10;
       pointer-events:auto;
     }
-    /* Hide the frame line right under the cats */
+    /* hide the border under the cats so they look seated on it */
     .cats::after{
-      content:"";
-      position:absolute; left:4px; right:4px; bottom:-2px;
-      height:6px; background:#fff; z-index:-1; pointer-events:none;
+      content:""; position:absolute; left:2px; right:2px; bottom:-2px; height:6px;
+      background:#fff; z-index:-1; pointer-events:none;
     }
 
     .cat{
-      --w:168px; --h:90px;      /* size on the frame */
-      --y-offset:0px;           /* per-image baseline fix for PNG bottom whitespace */
+      --w:168px; --h:90px;     /* size on the frame */
+      --y-offset:0px;          /* fix PNG bottom whitespace per image */
       width:var(--w); height:var(--h);
       position:relative; z-index:11;
     }
@@ -153,7 +149,7 @@
     .cat--white button:hover,
     .cat--white button:focus-visible{ background-image:var(--cat-white-ears); }
 
-    /* Pills – earlier style (not clipped) */
+    /* Pills (non-clipped, wrap allowed) */
     .chips{ display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
     .chip{
       background:#1f1f1f; color:#fff; font-size:.9rem;
@@ -162,28 +158,20 @@
 
     /* Emoji overlays */
     .scribble,.heart,.thought{ pointer-events:none; position:absolute; z-index:12; }
-
-    /* snug ⁉️ near Tobi’s ear */
-    .scribble{
-      top:-12px; right:2px; font-size:26px; line-height:1; opacity:0;
-      transform-origin:bottom left;
-    }
+    .scribble{ top:-12px; right:2px; font-size:26px; line-height:1; opacity:0; transform-origin:bottom left; }
     .scribble.show{ animation:popFade .5s ease forwards; }
 
     .heart{ left:50%; top:22%; transform:translateX(-50%); font-size:22px; line-height:1; opacity:0; }
     .heart.float{ animation:floatUp 820ms ease-out forwards; }
 
     .thought{
-      left:18%; top:-14px;
-      background:#2f2f2f; color:#fff; font-size:.9rem;
-      padding:6px 10px 7px; border-radius:12px; opacity:0;
-      transform:translateY(6px) scale(.98); white-space:nowrap;
+      left:18%; top:-14px; background:#2f2f2f; color:#fff; font-size:.9rem;
+      padding:6px 10px 7px; border-radius:12px; opacity:0; transform:translateY(6px) scale(.98); white-space:nowrap;
     }
     .thought::after{ content:""; position:absolute; left:12px; bottom:-6px; width:10px; height:10px; background:#2f2f2f; transform:rotate(45deg); border-radius:2px; }
     .thought.show{ animation:riseIn .22s ease-out forwards, hold 2.0s linear .22s forwards, fadeOut .28s ease 2.22s forwards; }
 
-    /* Footer line */
-    .footer{ color:var(--sub); font-size:.9rem; }
+    .footer{ color:var(--sub); font-size:.9rem; margin-top:10px; }
 
     /* Animations */
     @keyframes floatUp{
@@ -201,14 +189,14 @@
     @keyframes hold{ to{ opacity:1; } }
     @keyframes fadeOut{ to{ opacity:0; } }
 
-    /* Small screens: keep everything centered without scroll */
+    /* Small screens */
     @media (max-width:780px){
       h1{ font-size:2.2em; max-width:42rem; }
       .cat{ --w:140px; --h:74px; }
-      .cats{ top:-34px; right:12px; gap:4px; }
+      .cats{ top:-38px; right:10px; gap:2px; }
     }
 
-    /* Extra-preload of hover images via hidden background */
+    /* Hidden background to warm up hover images (extra precaution) */
     .preload{ position:absolute; left:-9999px; width:0; height:0; overflow:hidden;
       background-image: var(--cat-grey-awake), var(--cat-white-ears);
     }
@@ -218,9 +206,9 @@
 <body>
   <div class="preload" aria-hidden="true"></div>
 
-  <div class="shell">
+  <div class="page">
     <main class="wrap">
-      <div class="badge">☁️ howdy, i’m hanna!</div>
+      <div class="badge">𐚁₊⊹ howdy, i’m hanna!</div>
 
       <h1>austin-based designer uncovering intuitive + enjoyable experiences in complex systems.</h1>
 
@@ -231,7 +219,7 @@
       </p>
 
       <section class="feature">
-        <!-- Cats on the frame (top-right), closer + higher -->
+        <!-- Cats perched on the frame -->
         <div class="cats" aria-hidden="true">
           <div class="cat cat--grey">
             <button aria-label="grey cat — hover to wake, click to annoy" style="--y-offset: 8px;"></button>
@@ -256,7 +244,7 @@
         </div>
       </section>
 
-      <p class="footer">made with care · dec 2024</p>
+      <p class="footer">sept. 2025</p>
     </main>
   </div>
 
