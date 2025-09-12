@@ -20,14 +20,13 @@
       --accent:#5e7f3a;
       --accent-2:#87b35c;
 
-      /* your files */
+      /* your images */
       --cat-grey-sleep: url('tobi-asleep.png');
       --cat-grey-awake: url('tobi-awake.png');
       --cat-white-sleep: url('kono-chillin.png');
       --cat-white-ears:  url('kono-happy.png');
     }
 
-    /* page */
     html,body{height:100%}
     body{
       margin:0;
@@ -37,8 +36,7 @@
         radial-gradient(900px 560px at 18% 12%, #eefbe0 0%, #ffffff 60%),
         radial-gradient(1000px 640px at 86% 36%, #f2ffee 0%, #ffffff 65%),
         #fff;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
+      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
     }
 
     .wrap{ max-width:1100px; margin:48px auto 72px; padding:0 24px; }
@@ -50,126 +48,107 @@
       padding:.35rem .75rem;
     }
 
-    /* header text uses Akaya Telivigala */
+    /* HERO */
+    .hero{ position:relative; margin-top:12px; }
     h1{
       font-family:"Akaya Telivigala", system-ui;
       font-weight:400;
-      font-size:clamp(2.4rem, 4.8vw + 1rem, 4.4rem);
-      line-height:1.05;
+      font-size:2em;              /* ← requested size */
+      line-height:1.15;
       color:var(--green);
-      letter-spacing:.2px;
-      margin:.9rem 0 1.25rem;
+      margin:.65rem 0 1rem;
+      max-width:58ch;
     }
-
-    .lead{
-      font-size:1.15rem; color:var(--sub); max-width:60ch; margin:0 0 24px;
-    }
-    .lead a{ color:var(--accent); text-decoration:none; }
-    .lead a:hover{ color:var(--accent-2); }
-
-    /* simple single-border feature box */
-    .feature{
-      position:relative;
-      z-index:0;                 /* cats will sit above this */
-      margin-top:28px;
-      border:2px solid #000;     /* single border */
-      border-radius:22px;
-      padding:28px 28px 36px;
-      background:#fff;           /* no shadows = no double borders */
-      overflow:visible;          /* cats can hang over the edge */
-    }
-    .feature h2{
-      font-size:1rem; text-align:center; margin:2px 0 18px; color:var(--sub);
-    }
-
-    .chips{ display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
-    .chip{ background:#1f1f1f; color:#fff; font-size:.9rem; padding:.35rem .65rem; border-radius:999px; }
-
-    /* cats cluster (above the frame) */
-    .cats{
-      position:absolute; top:-34px; right:24px;
+    .hero-cats{
+      position:absolute;
+      top:50%;
+      right:0;
+      transform:translateY(-40%); /* sit a bit above vertical center */
       display:flex; gap:10px;
-      z-index:10;                /* above .feature */
-      pointer-events:auto;
-    }
-    /* mask the frame right under the cats to “sit” them on the line */
-    .cats::after{
-      content:""; position:absolute; left:8px; right:8px; bottom:-2px; height:6px;
-      background:#fff; z-index:-1; pointer-events:none;
+      z-index:10;
     }
 
+    /* CAT buttons (now in the hero area) */
     .cat{
-      --w: 200px;    /* overall size */
-      --h: 106px;
-      --y-offset: 0px;  /* compensate for PNG bottom whitespace */
+      --w: 170px;    /* overall size next to the header */
+      --h: 90px;
+      --y-offset: 0px; /* compensate for any bottom whitespace in PNGs */
       width:var(--w); height:var(--h);
-      position:relative; z-index:11; overflow:visible;
+      position:relative;
     }
-
     .cat button{
       width:100%; height:100%;
-      position:relative; z-index:12;
       border:0; background:transparent; cursor:pointer;
       appearance:none; -webkit-appearance:none;
       background-repeat:no-repeat; background-size:contain;
-      /* anchor to bottom, then push by --y-offset */
       background-position:center calc(100% + var(--y-offset));
       transition:background-image 0s, opacity .2s ease;
-      outline:none; box-shadow:none;
-      -webkit-tap-highlight-color:transparent;
+      outline:none; box-shadow:none; -webkit-tap-highlight-color:transparent;
     }
-    /* no borders on hover; ring only for keyboard users */
     .cat button:hover{ outline:none; box-shadow:none; }
     .cat button:focus{ outline:none; }
     .cat button:focus-visible{ box-shadow:0 0 0 2px var(--accent-2); border-radius:12px; }
 
-    /* hover swaps */
+    /* state swaps */
     .cat--grey button{ background-image:var(--cat-grey-sleep); }
     .cat--grey button:hover,
     .cat--grey button:focus-visible{ background-image:var(--cat-grey-awake); }
-
     .cat--white button{ background-image:var(--cat-white-sleep); }
     .cat--white button:hover,
     .cat--white button:focus-visible{ background-image:var(--cat-white-ears); }
 
-    /* overlays (emoji), never intercept pointer events */
-    .scribble, .heart, .thought { pointer-events:none; }
-
-    .scribble{
-      position:absolute; z-index:13;
-      top:-26px; right:8px;
-      font-size:44px; line-height:1; opacity:0;
-      transform-origin:bottom left;
-    }
+    /* overlays */
+    .scribble,.heart,.thought{ pointer-events:none; position:absolute; z-index:12; }
+    .scribble{ top:-22px; right:6px; font-size:40px; line-height:1; opacity:0; transform-origin:bottom left; }
     .scribble.show{ animation:popFade .7s ease forwards; }
 
-    .heart{
-      position:absolute; z-index:13;
-      left:50%; top:22%; transform:translateX(-50%);
-      font-size:26px; line-height:1; opacity:0;
-    }
+    .heart{ left:50%; top:22%; transform:translateX(-50%); font-size:24px; line-height:1; opacity:0; }
     .heart.float{ animation:floatUp 900ms ease-out forwards; }
 
     .thought{
-      position:absolute; z-index:13;
-      left:22%; top:-18px;
-      background:#2f2f2f; color:#fff; font-size:.9rem;
-      padding:6px 10px 7px; border-radius:12px;
-      opacity:0; transform:translateY(6px) scale(.98);
-      white-space:nowrap;
+      left:18%; top:-16px; background:#2f2f2f; color:#fff; font-size:.9rem;
+      padding:6px 10px 7px; border-radius:12px; opacity:0;
+      transform:translateY(6px) scale(.98); white-space:nowrap;
     }
-    .thought::after{
-      content:""; position:absolute; left:14px; bottom:-6px;
-      width:10px; height:10px; background:#2f2f2f; transform:rotate(45deg); border-radius:2px;
-    }
+    .thought::after{ content:""; position:absolute; left:12px; bottom:-6px; width:10px; height:10px; background:#2f2f2f; transform:rotate(45deg); border-radius:2px; }
     .thought.show{ animation:riseIn .25s ease-out forwards, hold 2.2s linear .25s forwards, fadeOut .3s ease 2.45s forwards; }
+
+    /* LEAD TEXT */
+    .lead{ font-size:1.05rem; color:var(--sub); max-width:60ch; margin:0 0 24px; }
+    .lead a{ color:var(--accent); text-decoration:none; }
+    .lead a:hover{ color:var(--accent-2); }
+
+    /* “Things I like” — simple, single-border box */
+    .feature{
+      position:relative;
+      margin-top:24px;
+      border:2px solid #000;
+      border-radius:22px;
+      padding:28px 28px 32px;
+      background:#fff;
+    }
+    .feature h2{ font-size:.95rem; text-align:center; margin:2px 0 18px; color:var(--sub); }
+
+    /* One-line chips: no wrap; hide the optional chip on narrower screens */
+    .chips{
+      display:flex; flex-wrap:nowrap; gap:8px; justify-content:center;
+      overflow:hidden; /* no scrollbars; we’ll hide an optional chip below */
+    }
+    .chip{
+      background:#1f1f1f; color:#fff; font-size:.9rem;
+      padding:.35rem .6rem; border-radius:999px; white-space:nowrap;
+    }
+    /* If screen is a bit narrower, drop the optional chip to keep it one line */
+    @media (max-width: 1100px){
+      .chip--optional{ display:none; }
+    }
 
     /* animations */
     @keyframes floatUp{
       0%{ transform:translate(-50%,0) scale(.9); opacity:0; }
       15%{ opacity:1; }
-      70%{ transform:translate(-50%,-36px) scale(1.1); }
-      100%{ transform:translate(-50%,-48px) scale(1); opacity:0; }
+      70%{ transform:translate(-50%,-32px) scale(1.1); }
+      100%{ transform:translate(-50%,-44px) scale(1); opacity:0; }
     }
     @keyframes popFade{
       0%{ transform:scale(.6) rotate(-6deg); opacity:0; }
@@ -180,16 +159,13 @@
     @keyframes hold{ to{ opacity:1; } }
     @keyframes fadeOut{ to{ opacity:0; } }
 
-    /* responsive */
+    /* small screens */
     @media (max-width:700px){
-      .wrap{ margin:32px auto 64px; }
-      .cats{ top:-26px; right:14px; gap:8px; }
-      .cat{ --w:160px; --h:85px; }
-      .scribble{ top:-20px; right:6px; font-size:36px; }
-      .thought{ left:18%; }
+      .hero-cats{ transform:translateY(-20%); }
+      .cat{ --w:140px; --h:74px; }
+      .scribble{ font-size:34px; top:-18px; }
     }
 
-    /* reduced motion */
     @media (prefers-reduced-motion: reduce){
       .heart.float,.scribble.show,.thought.show{ animation:none; opacity:1; }
     }
@@ -198,9 +174,26 @@
 
 <body>
   <main class="wrap">
-    <div class="badge">☁️  howdy, i’m hanna!</div>
+    <div class="badge">☁️ howdy, i’m hanna!</div>
 
-    <h1>austin-based designer uncovering intuitive + enjoyable experiences in complex systems.</h1>
+    <section class="hero">
+      <h1>austin-based designer uncovering intuitive + enjoyable experiences in complex systems.</h1>
+
+      <!-- Cats to the RIGHT of the header -->
+      <div class="hero-cats" aria-hidden="true">
+        <!-- Grey cat (Tobi) -->
+        <div class="cat cat--grey">
+          <button aria-label="grey cat — hover to wake, click to annoy" style="--y-offset: 8px;"></button>
+          <div class="scribble">⁉️</div>
+        </div>
+
+        <!-- White cat (Kono) -->
+        <div class="cat cat--white">
+          <button aria-label="white cat — hover to perk ears, click for heart" style="--y-offset: 10px;"></button>
+          <div class="heart">❤️</div>
+        </div>
+      </div>
+    </section>
 
     <p class="lead">
       currently at <a href="https://www.leveltenenergy.com/" target="_blank" rel="noopener">LevelTen Energy</a>.
@@ -209,30 +202,13 @@
     </p>
 
     <section class="feature">
-      <!-- Cats perched on the border -->
-      <div class="cats" aria-hidden="true">
-        <!-- Grey cat (Tobi) -->
-        <div class="cat cat--grey">
-          <!-- Adjust --y-offset if PNG has bottom whitespace -->
-          <button aria-label="grey cat — hover to wake, click to annoy" style="--y-offset: 10px;"></button>
-          <div class="scribble" aria-hidden="true">⁉️</div>
-        </div>
-
-        <!-- White cat (Kono) -->
-        <div class="cat cat--white">
-          <button aria-label="white cat — hover to perk ears, click for heart" style="--y-offset: 12px;"></button>
-          <div class="heart" aria-hidden="true">❤️</div>
-          <div class="thought" aria-hidden="true">🍣 …dreaming…</div>
-        </div>
-      </div>
-
       <h2>some things i especially like</h2>
-      <div class="chips" role="list">
+      <div class="chips" role="list" aria-label="interests">
         <span class="chip" role="listitem">technical spaces</span>
         <span class="chip" role="listitem">flexbox</span>
         <span class="chip" role="listitem">inspect tools</span>
         <span class="chip" role="listitem">inclusive design</span>
-        <span class="chip" role="listitem">sociological framing</span>
+        <span class="chip chip--optional" role="listitem">sociological framing</span>
         <span class="chip" role="listitem">non-traditional interfaces</span>
         <span class="chip" role="listitem">systems design</span>
         <span class="chip" role="listitem">my cats ^-^</span>
@@ -245,7 +221,7 @@
   <script>
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // White cat (Kono)
+    // Kono (white) heart click + periodic food thought
     const whiteCat = document.querySelector('.cat--white');
     const whiteBtn = whiteCat.querySelector('button');
     const heart = whiteCat.querySelector('.heart');
@@ -253,8 +229,8 @@
 
     whiteBtn.addEventListener('click', () => {
       heart.classList.remove('float');
-      heart.style.left = (45 + Math.random()*10) + '%'; // tiny jitter
-      void heart.offsetWidth; // restart animation
+      heart.style.left = (45 + Math.random()*10) + '%';
+      void heart.offsetWidth;
       heart.classList.add('float');
     });
 
@@ -274,18 +250,16 @@
     }
     scheduleThought();
 
-    // Grey cat (Tobi)
+    // Tobi (grey) anger mark on click
     const greyCat = document.querySelector('.cat--grey');
     const greyBtn = greyCat.querySelector('button');
     const scribble = greyCat.querySelector('.scribble');
 
     greyBtn.addEventListener('click', () => {
       scribble.classList.remove('show');
-      void scribble.offsetWidth; // restart animation
+      void scribble.offsetWidth;
       scribble.classList.add('show');
     });
-
-    // CSS sets initial images; :hover handles swaps.
   </script>
 </body>
 </html>
