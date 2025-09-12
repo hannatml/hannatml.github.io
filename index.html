@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Akaya+Telivigala&family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet"/>
 
-  <!-- Preload images -->
+  <!-- Preload -->
   <link rel="preload" as="image" href="tobi-asleep.png">
   <link rel="preload" as="image" href="tobi-awake.png">
   <link rel="preload" as="image" href="kono-chillin.png">
@@ -21,17 +21,17 @@
       --ink:#1a1a1a; --sub:#4b4b4b;
       --green:#4a5d23; --accent:#5e7f3a; --accent-2:#87b35c;
 
-      --cat-grey-sleep:url('tobi-asleep.png');
-      --cat-grey-awake:url('tobi-awake.png');
-      --cat-white-sleep:url('kono-chillin.png');
-      --cat-white-ears:url('kono-happy.png');
+      --tobi-sleep:url('tobi-asleep.png');
+      --tobi-awake:url('tobi-awake.png');
+      --kono-sleep:url('kono-chillin.png');
+      --kono-ears:url('kono-happy.png');
 
-      /* Desktop defaults (scaled down at breakpoints) */
-      --catW: 228px;
-      --catH: 128px;
-      --overlap: 92px;   /* how much white overlaps grey (closes the visual gap) */
-      --perchPad: 40px;  /* how much of each cat sits "inside" the frame */
-      --sidePad: 32px;   /* page side padding for equal margins */
+      /* Cat sizing/position knobs (change these if you want them bigger/tighter) */
+      --catW: 220px;        /* desktop cat width  */
+      --catH: 124px;        /* desktop cat height */
+      --catOverlap: -96px;  /* negative = overlap; make more negative = tighter */
+      --catPerchIn: 40px;   /* how much of cat sits “inside” the box */
+      --sidePad: 32px;      /* page side padding */
     }
 
     html,body{height:100%}
@@ -44,10 +44,9 @@
         radial-gradient(1000px 640px at 86% 36%, #f2ffee 0%, #ffffff 65%),
         #fff;
       -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
-      overflow-x:hidden; /* belt-and-suspenders */
+      overflow-x:hidden; /* kill sideways scroll globally */
     }
 
-    /* Center the whole content block */
     .page{
       min-height:100dvh;
       display:grid;
@@ -60,13 +59,12 @@
       width:100%;
       max-width:1100px;
       margin-inline:auto;
-      padding-inline:var(--sidePad);   /* equal L/R margins without calc() */
+      padding-inline:var(--sidePad);       /* symmetric margins, no calc() */
       box-sizing:border-box;
       display:flex; flex-direction:column; align-items:flex-start; gap:16px;
-      overflow-x:clip; /* prevent absolutely-positioned children from causing scroll */
+      overflow-x:clip;                     /* nothing inside can cause scroll */
     }
 
-    /* Howdy pill */
     .badge{
       display:inline-flex; align-items:center; gap:.5ch;
       font-size:.95rem; color:var(--sub);
@@ -74,7 +72,6 @@
       padding:.35rem .75rem;
     }
 
-    /* Header + lead */
     h1{
       font-family:"Akaya Telivigala", system-ui;
       font-weight:400; font-size:2.6em; line-height:1.12;
@@ -84,45 +81,40 @@
     .lead a{ color:var(--accent); text-decoration:none; }
     .lead a:hover{ color:var(--accent-2); }
 
-    /* Feature frame */
     .feature{
       position:relative;
       width:100%;
       border:2px solid #000; border-radius:22px;
-      padding:60px 28px 36px;
-      /* Space above scales with cat size so they never hit the lead text */
-      margin-top: max(28px, calc((var(--catH) - var(--perchPad)) + 18px));
+      padding:62px 28px 36px;                    /* inner breathing room */
+      margin-top:max(28px, calc((var(--catH) - var(--catPerchIn)) + 18px));
       background:#fff;
-      overflow:visible; /* allow cats to perch above */
     }
     .feature h2{ font-size:1rem; text-align:center; margin:0 0 20px; color:var(--sub); }
 
-    /* CAT LAYER — absolutely positioned, width constrained to column */
+    /* CATS
+       Flex row INSIDE an absolutely-positioned rail.
+       We overlap the second cat via a negative margin (ignores PNG side padding). */
     .cats{
       position:absolute;
-      /* Perch above the top border by the portion that sits outside the box */
-      top: calc(-1 * (var(--catH) - var(--perchPad)));
-      right: max(12px, min(16px, 3.5vw));  /* responsive right inset */
-      /* Container width must fit inside the column to avoid horizontal scroll */
-      width: min( calc(100% - var(--sidePad)*2 - 56px),
-                  calc(var(--catW) * 2 - var(--overlap)) );
-      height: var(--catH);
+      top:calc(-1 * (var(--catH) - var(--catPerchIn)));  /* perch on border */
+      right:var(--sidePad);
+      display:flex; align-items:flex-end;
+      gap:0;
+      max-width:calc(100% - var(--sidePad));  /* rail can’t exceed column */
       z-index:10;
     }
-    /* subtle mask so the border line doesn't run through their paws */
-    .cats::after{
-      content:""; position:absolute; left:-6px; right:-6px; bottom:-4px; height:8px;
-      background:#fff; z-index:-1; pointer-events:none; border-radius:999px;
+    .cats::after{ /* subtle white strip to hide border under paws */
+      content:""; position:absolute; left:0; right:0; bottom:-4px; height:8px;
+      background:#fff; z-index:-1; border-radius:999px; pointer-events:none;
     }
 
-    /* Place each cat with explicit overlap—independent of PNG whitespace */
     .cat{
-      position:absolute; bottom:0;
+      position:relative;
       width:var(--catW); height:var(--catH);
-      --x:0px; --y:0px; /* per-image nudge for internal whitespace */
+      --x:0px; --y:0px;  /* per-image nudge to cancel PNG whitespace */
+      flex:0 0 auto;
     }
-    .cat--grey { left:0; }
-    .cat--white{ left: calc(var(--catW) - var(--overlap)); }
+    .cat + .cat{ margin-left: var(--catOverlap); } /* <-- forces closeness */
 
     .cat button{
       width:100%; height:100%;
@@ -131,12 +123,11 @@
       background-position: calc(50% + var(--x)) calc(100% + var(--y));
       outline:none; box-shadow:none; -webkit-tap-highlight-color:transparent;
     }
-    .cat--grey  button{ background-image:var(--cat-grey-sleep); }
-    .cat--grey  button:hover, .cat--grey  button:focus-visible{ background-image:var(--cat-grey-awake); }
-    .cat--white button{ background-image:var(--cat-white-sleep); }
-    .cat--white button:hover, .cat--white button:focus-visible{ background-image:var(--cat-white-ears); }
+    .cat--grey  button{ background-image:var(--tobi-sleep); }
+    .cat--grey  button:hover, .cat--grey button:focus-visible{ background-image:var(--tobi-awake); }
+    .cat--white button{ background-image:var(--kono-sleep); }
+    .cat--white button:hover, .cat--white button:focus-visible{ background-image:var(--kono-ears); }
 
-    /* Pills */
     .chips{ display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
     .chip{ background:#1f1f1f; color:#fff; font-size:.9rem; padding:.35rem .65rem; border-radius:999px; white-space:nowrap; }
 
@@ -155,9 +146,9 @@
       100%{ opacity:0; transform:translate(-50%,-90%) scale(1) rotate(0); }
     }
 
-    /* Kono heart + thought bubble */
+    /* Kono heart + thought */
     .heart{
-      position:absolute; left:52%; top:32%;
+      position:absolute; left:50%; top:30%;
       transform:translateX(-50%);
       font-size:24px; line-height:1; opacity:0; pointer-events:none;
     }
@@ -170,7 +161,7 @@
     }
 
     .thought{
-      position:absolute; left:64%; top:-18px;
+      position:absolute; left:62%; top:-18px;
       background:#2f2f2f; color:#fff; font-size:.95rem; line-height:1;
       padding:6px 10px 7px; border-radius:12px; white-space:nowrap;
       opacity:0; transform:translateY(6px) scale(.98); pointer-events:none; z-index:12;
@@ -187,28 +178,19 @@
     /* Tablet */
     @media (max-width:780px){
       h1{ font-size:2.2em; }
-      :root{ --catW: 200px; --catH: 112px; --overlap: 84px; --perchPad: 38px; }
+      :root{ --catW:200px; --catH:112px; --catOverlap:-88px; --catPerchIn:38px; }
       .feature{ padding-top:60px; }
-      .heart{ font-size:22px; top:32%; }
-      .thought{ left:62%; top:-16px; font-size:.9rem; }
+      .thought{ left:60%; top:-16px; font-size:.9rem; }
     }
 
-    /* Narrow phones — guarantee the cats layer ALWAYS fits the column */
+    /* Small phones */
     @media (max-width:420px){
-      :root{
-        --catW: 168px;         /* still bigger than earlier, but fits */
-        --catH: 98px;
-        --overlap: 76px;       /* strong overlap to remove the visual gap */
-        --perchPad: 34px;
-        --sidePad: 28px;       /* slightly tighter side padding on tiny screens */
-      }
+      :root{ --catW:176px; --catH:100px; --catOverlap:-80px; --catPerchIn:34px; --sidePad:24px; }
       .feature{ padding-top:58px; }
-      .thought{ left:60%; }
     }
 
-    /* Warm-up */
     .preload{ position:absolute; left:-9999px; width:0; height:0; overflow:hidden;
-      background-image: var(--cat-grey-awake), var(--cat-white-ears);
+      background-image: var(--tobi-awake), var(--kono-ears);
     }
   </style>
 </head>
@@ -228,13 +210,11 @@
       </p>
 
       <section class="feature">
-        <!-- Cats perched and overlapped -->
+        <!-- Cats perched -->
         <div class="cats" aria-hidden="true">
-          <!-- Tobi (grey) -->
-          <div class="cat cat--grey" style="--x:10px; --y:12px">
+          <div class="cat cat--grey"  style="--x:10px; --y:12px">
             <button aria-label="grey cat — hover to wake, click to grumble"></button>
           </div>
-          <!-- Kono (white) -->
           <div class="cat cat--white" style="--x:-10px; --y:12px">
             <button aria-label="white cat — hover to perk ears, click for heart"></button>
             <div class="heart" aria-hidden="true">❤️</div>
@@ -289,17 +269,16 @@
     // Kono: occasional thought bubble (auto)
     const thought = white.querySelector('.thought');
     const foods = ['🍣','🐟','🍗','🥟','🧀','🍤','🍜'];
-    function scheduleThought(){
-      const delay = 8000 + Math.random()*8000; // 8–16s
+    (function schedule(){
+      const delay = 8000 + Math.random()*8000;
       setTimeout(() => {
         if (!thought) return;
         thought.textContent = reduceMotion ? '…'
           : foods[Math.floor(Math.random()*foods.length)] + ' …dreaming…';
         thought.classList.add('show');
-        setTimeout(() => { thought.classList.remove('show'); scheduleThought(); }, 2500);
+        setTimeout(() => { thought.classList.remove('show'); schedule(); }, 2500);
       }, delay);
-    }
-    scheduleThought();
+    })();
   </script>
 </body>
 </html>
