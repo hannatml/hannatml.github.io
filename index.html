@@ -1,107 +1,269 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Moirai+One&family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <style>
-        .moirai-one-regular {
-          font-family: "Moirai One", system-ui;
-          font-weight: 400;
-          font-style: normal;
-        }
-        // <uniquifier>: Use a unique and descriptive class name
-        // <weight>: Use a value from 100 to 900
-        
-        .sour-gummy-body {
-          font-family: "Sour Gummy", sans-serif;
-          font-optical-sizing: auto;
-          font-weight: 300;
-          font-style: normal;
-          font-variation-settings:
-            "wdth" 100;
-        }
-        body {
-            font-family: "Sour Gummy", sans-serif;
-            background-color: #312E2E;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            text-align: left;
-        }
-        h1 {
-            font-family: "Moirai One", system-ui;
-            font-size: 2.5rem;
-            font-weight: 600;
-            margin: 0.5rem 0;
-            color: #FDEBD2;
-        }
-        p {
-            font-size: 1.1rem;
-            line-height: 1.6;
-            margin: 1rem 0;
-            color: #F3ECEC;
-            max-width: 600px;
-        }
-        a {
-            text-decoration: none;
-            color: #FDEBD2;
-            transition: color 0.3s ease;
-        }
-        a:hover {
-            color: #FFD396;
-        }
-        .links {
-            margin-top: 40px;
-            margin-bottom: 20px;
-        }
-        .links a {
-            color: #B3E27C;
-            transition: all 0.3s ease;
-            border: 1px solid #B3E27C;
-            border-radius: 10px;
-            padding: 8px;
-        }
-        .links a:hover {
-            color: #D5F3B5;
-        }
-        footer {
-            margin-top: 2rem;
-            color: #aaa;
-        }
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Moirai+One&family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet"/>
+  <title>hanna gratch</title>
 
-        footer p {
-            font-size: 0.75rem;
-        }
+  <style>
+    :root{
+      --ink:#1a1a1a;
+      --sub:#4b4b4b;
+      --green:#425b25;
+      --accent:#5e7f3a;
+      --accent-2:#87b35c;
 
-        .main-content {
-            padding: 36px 48px 48px 48px;
-            border: 2px solid #5D5656;
-            background-color: #494343;
-            border-radius: 20px;
-        }
+      /* asset vars - using your filenames */
+      --cat-grey-sleep: url('tobi-asleep.png');
+      --cat-grey-awake: url('tobi-awake.png');
+      --cat-white-sleep: url('kono-chillin.png');
+      --cat-white-ears:  url('kono-happy.png');
+    }
 
-        .small-text {
-            font-size: 0.75rem;
-        }
+    /* page */
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:"Sour Gummy",system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(800px 500px at 20% 10%, #eefbe0 0%, #ffffff 60%),
+        radial-gradient(900px 600px at 85% 35%, #f2ffee 0%, #ffffff 65%),
+        #fff;
+    }
 
-    </style>
+    header{
+      max-width:1100px; margin:48px auto 0; padding:0 24px;
+      display:flex; align-items:center; justify-content:space-between;
+    }
+    nav a{ color:var(--ink); text-decoration:none; margin-left:20px; }
+    nav a:hover{ color:var(--green); }
+
+    .wrap{ max-width:1100px; margin:32px auto 80px; padding:0 24px; }
+
+    .badge{
+      display:inline-flex; align-items:center; gap:.5ch;
+      font-size:.95rem; color:var(--sub);
+      background:#fff; border:1px solid #000; border-radius:999px;
+      padding:.35rem .75rem; box-shadow:0 2px 0 #000;
+    }
+    h1{
+      font-family:"Moirai One",system-ui;
+      font-weight:600;
+      font-size:clamp(2.2rem, 4vw + 1rem, 4rem);
+      line-height:1.08; color:var(--green);
+      margin:.75rem 0 1.25rem; letter-spacing:.2px;
+    }
+    .lead{ font-size:1.15rem; color:var(--sub); max-width:50ch; margin:0 0 24px; }
+
+    /* feature box the cats perch on */
+    .feature{
+      position:relative; margin-top:28px;
+      border:2px solid #000; border-radius:20px;
+      padding:28px 28px 36px; background:#fff; box-shadow:0 6px 0 #000;
+      overflow:visible;
+    }
+    .feature h2{ font-size:1rem; text-align:center; margin:2px 0 18px; color:var(--sub); }
+
+    .chips{ display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
+    .chip{ background:#1f1f1f; color:#fff; font-size:.9rem; padding:.35rem .65rem; border-radius:999px; }
+
+    .cta{ display:block; text-align:center; margin:28px auto 0; color:var(--accent); text-decoration:none; }
+    .cta:hover{ color:var(--accent-2); }
+
+    /* cats cluster */
+    .cats{
+      position:absolute; top:-34px; right:24px;
+      display:flex; gap:10px; z-index:3; pointer-events:none;
+    }
+    /* mask border under cats so they sit on it */
+    .cats::after{
+      content:""; position:absolute; left:8px; right:8px; bottom:-2px; height:6px;
+      background:#fff; z-index:-1;
+    }
+
+    .cat{
+      --w: 200px;            /* make them a bit bigger by default */
+      --h: 106px;
+      --y-offset: 0px;       /* per-image baseline compensation for extra bottom whitespace */
+      width:var(--w); height:var(--h);
+      position:relative; pointer-events:auto; overflow:visible;
+    }
+    .cat button{
+      width:100%; height:100%;
+      border:0; background:transparent; cursor:pointer; outline-offset:3px;
+      background-repeat:no-repeat; background-size:contain;
+      /* Anchor to bottom, then push down by --y-offset to counter extra transparent pixels in PNG */
+      background-position: center calc(100% + var(--y-offset));
+      transition:background-image 0s, opacity .2s ease;
+    }
+
+    /* grey cat */
+    .cat--grey button{ background-image:var(--cat-grey-sleep); }
+    .cat--grey button:hover,
+    .cat--grey button:focus-visible{ background-image:var(--cat-grey-awake); outline:2px solid var(--accent-2); }
+    .scribble{
+      position:absolute; z-index:4; pointer-events:none;
+      top:-26px; right:8px; font-size:44px; line-height:1; opacity:0; transform-origin:bottom left;
+    }
+    .scribble.show{ animation:popFade .7s ease forwards; }
+
+    /* white cat */
+    .cat--white button{ background-image:var(--cat-white-sleep); }
+    .cat--white button:hover,
+    .cat--white button:focus-visible{ background-image:var(--cat-white-ears); outline:2px solid var(--accent-2); }
+
+    .heart{
+      position:absolute; left:50%; top:22%;
+      transform:translateX(-50%);
+      font-size:26px; line-height:1; opacity:0; pointer-events:none; z-index:4;
+    }
+    .heart.float{ animation:floatUp 900ms ease-out forwards; }
+
+    .thought{
+      position:absolute; left:22%; top:-18px; z-index:4;
+      background:#2f2f2f; color:#fff; font-size:.9rem;
+      padding:6px 10px 7px; border-radius:12px; box-shadow:0 2px 6px rgba(0,0,0,.18);
+      opacity:0; transform:translateY(6px) scale(.98); pointer-events:none; white-space:nowrap;
+    }
+    .thought::after{
+      content:""; position:absolute; left:14px; bottom:-6px; width:10px; height:10px; background:#2f2f2f; transform:rotate(45deg); border-radius:2px;
+    }
+    .thought.show{ animation:riseIn .25s ease-out forwards, hold 2.2s linear .25s forwards, fadeOut .3s ease 2.45s forwards; }
+
+    /* animations */
+    @keyframes floatUp{
+      0%{ transform:translate(-50%,0) scale(.9); opacity:0; }
+      15%{ opacity:1; }
+      70%{ transform:translate(-50%,-36px) scale(1.1); }
+      100%{ transform:translate(-50%,-48px) scale(1); opacity:0; }
+    }
+    @keyframes popFade{
+      0%{ transform:scale(.6) rotate(-6deg); opacity:0; }
+      30%{ transform:scale(1.05) rotate(2deg); opacity:1; }
+      100%{ transform:scale(1) rotate(0); opacity:0; }
+    }
+    @keyframes riseIn{ to{ opacity:1; transform:translateY(0) scale(1);} }
+    @keyframes hold{ to{ opacity:1; } }
+    @keyframes fadeOut{ to{ opacity:0; } }
+
+    /* responsive */
+    @media (max-width:700px){
+      .cats{ top:-26px; right:14px; gap:8px; }
+      .cat{ --w:160px; --h:85px; }
+      .scribble{ top:-20px; right:6px; font-size:36px; }
+      .thought{ left:18%; }
+    }
+
+    /* reduced motion */
+    @media (prefers-reduced-motion: reduce){
+      .heart.float,.scribble.show,.thought.show{ animation:none; opacity:1; }
+    }
+  </style>
 </head>
+
 <body>
-    <div class="main-content">
-        <h1>hanna (하나)</h1>
-        <p>hanna gratch is an austin-based product designer uncovering inuitive + enjoyable experiences in complex systems.</p>
-        <p>currently: <a href="https://www.leveltenenergy.com/">LevelTen Energy</a></p>
-        <p>previously: <a href="https://data.world/home/">data.world</a>, <a href="https://www.mcmaster.com/">McMaster-Carr</a></p>
-        <div class="links">
-            <a href="https://linkedin.com/in/hanna-gratch" target="_blank">reach out via linkedIn</a>
+  <header>
+    <div style="font-weight:700; letter-spacing:.5px;">hk</div>
+    <nav>
+      <a href="/work/">work</a>
+      <a href="/about/">about</a>
+      <a href="/resume/" target="_blank" rel="noopener">resume</a>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <div class="badge">☁️  howdy, i’m hanna!</div>
+    <h1>austin-based designer uncovering intuitive + enjoyable experiences in complex systems.</h1>
+    <p class="lead">currently at <a href="https://www.leveltenenergy.com/" target="_blank" rel="noopener" style="color:var(--accent); text-decoration:none;">LevelTen Energy</a>. previously: <a href="https://data.world/home/" target="_blank" rel="noopener" style="color:var(--accent); text-decoration:none;">data.world</a>, <a href="https://www.mcmaster.com/" target="_blank" rel="noopener" style="color:var(--accent); text-decoration:none;">McMaster-Carr</a>.</p>
+
+    <section class="feature">
+      <!-- Cats perched on the border -->
+      <div class="cats" aria-hidden="true">
+        <!-- Grey cat (Tobi) -->
+        <div class="cat cat--grey">
+          <!-- If your PNG has extra bottom whitespace, increase --y-offset (e.g., 14px) -->
+          <button aria-label="grey cat — hover to wake, click to annoy" style="--y-offset: 10px;"></button>
+          <div class="scribble" aria-hidden="true">⁉️</div>
         </div>
-    </div>
-    <p class="small-text">made in dec 2024.</p>
+
+        <!-- White cat (Kono) -->
+        <div class="cat cat--white">
+          <button aria-label="white cat — hover to perk ears, click for heart" style="--y-offset: 12px;"></button>
+          <div class="heart" aria-hidden="true">❤️</div>
+          <div class="thought" aria-hidden="true">🍣 …dreaming…</div>
+        </div>
+      </div>
+
+      <h2>some things i especially like</h2>
+      <div class="chips" role="list">
+        <span class="chip" role="listitem">technical spaces</span>
+        <span class="chip" role="listitem">flexbox</span>
+        <span class="chip" role="listitem">inspect tools</span>
+        <span class="chip" role="listitem">inclusive design</span>
+        <span class="chip" role="listitem">sociological framing</span>
+        <span class="chip" role="listitem">non-traditional interfaces</span>
+        <span class="chip" role="listitem">systems design</span>
+        <span class="chip" role="listitem">my cats ^-^</span>
+      </div>
+
+      <a class="cta" href="/work/">check out my work ↗</a>
+    </section>
+
+    <p style="margin-top:28px; color:var(--sub); font-size:.9rem;">made with care • dec 2024</p>
+  </main>
+
+  <script>
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // White cat
+    const whiteCat = document.querySelector('.cat--white');
+    const whiteBtn = whiteCat.querySelector('button');
+    const heart = whiteCat.querySelector('.heart');
+    const thought = whiteCat.querySelector('.thought');
+
+    whiteBtn.addEventListener('click', () => {
+      heart.classList.remove('float');
+      // small horizontal jitter so repeats feel alive
+      heart.style.left = (45 + Math.random()*10) + '%';
+      void heart.offsetWidth; // restart animation
+      heart.classList.add('float');
+    });
+
+    function scheduleThought(){
+      const delay = 8000 + Math.random()*8000;
+      setTimeout(() => {
+        if (!reduceMotion) {
+          const foods = ['🍣','🐟','🍗','🥟','🧀','🍤','🍜'];
+          thought.textContent = foods[Math.floor(Math.random()*foods.length)] + ' …dreaming…';
+        }
+        thought.classList.add('show');
+        setTimeout(() => {
+          thought.classList.remove('show');
+          scheduleThought();
+        }, 2750);
+      }, delay);
+    }
+    scheduleThought();
+
+    // Grey cat
+    const greyCat = document.querySelector('.cat--grey');
+    const greyBtn = greyCat.querySelector('button');
+    const scribble = greyCat.querySelector('.scribble');
+
+    greyBtn.addEventListener('click', () => {
+      scribble.classList.remove('show');
+      void scribble.offsetWidth; // restart animation
+      scribble.classList.add('show');
+    });
+
+    // Initial background images (hover swaps are in CSS)
+    document.querySelector('.cat--grey button').style.backgroundImage = getComputedStyle(document.documentElement).getPropertyValue('--cat-grey-sleep');
+    document.querySelector('.cat--white button').style.backgroundImage = getComputedStyle(document.documentElement).getPropertyValue('--cat-white-sleep');
+  </script>
 </body>
 </html>
