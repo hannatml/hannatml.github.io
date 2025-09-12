@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Akaya+Telivigala&family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet"/>
 
-  <!-- Preload (prevents first-hover swap flicker) -->
+  <!-- Preload images to avoid first-hover flicker -->
   <link rel="preload" as="image" href="tobi-asleep.png">
   <link rel="preload" as="image" href="tobi-awake.png">
   <link rel="preload" as="image" href="kono-chillin.png">
@@ -25,10 +25,10 @@
       --accent:#5e7f3a;
       --accent-2:#87b35c;
 
-      --cat-grey-sleep: url('tobi-asleep.png');
-      --cat-grey-awake: url('tobi-awake.png');
-      --cat-white-sleep: url('kono-chillin.png');
-      --cat-white-ears:  url('kono-happy.png');
+      --cat-grey-sleep:url('tobi-asleep.png');
+      --cat-grey-awake:url('tobi-awake.png');
+      --cat-white-sleep:url('kono-chillin.png');
+      --cat-white-ears:url('kono-happy.png');
     }
 
     html,body{height:100%}
@@ -44,23 +44,26 @@
       -moz-osx-font-smoothing:grayscale;
     }
 
-    /* Center the whole content block in the viewport */
+    /* Center the entire content block both ways */
     .page{
       min-height:100dvh;
       display:grid;
-      place-items:start center; /* centered container; keep content left-aligned */
-      padding:32px 0 48px;
+      place-items:center;       /* centers the .wrap vertically & horizontally */
+      padding:32px 0;           /* small breathing room */
       box-sizing:border-box;
     }
 
+    /* The centered block (left-aligned contents) */
     .wrap{
       width:min(1100px, calc(100% - 64px));
-      margin:0 auto;           /* bulletproof centering fallback */
+      margin:0 auto;
       display:flex;
       flex-direction:column;
+      align-items:flex-start;   /* keep inner content left-aligned */
       gap:16px;
     }
 
+    /* Howdy pill (restored) */
     .badge{
       display:inline-flex; align-items:center; gap:.5ch;
       font-size:.95rem; color:var(--sub);
@@ -68,6 +71,7 @@
       padding:.35rem .75rem;
     }
 
+    /* Header */
     h1{
       font-family:"Akaya Telivigala", system-ui;
       font-weight:400;
@@ -75,14 +79,13 @@
       line-height:1.12;
       color:var(--green);
       margin:8px 0 6px;
-      max-width:56rem;  /* controls line breaks */
+      max-width:56rem;      /* controls line breaks like in your mock */
       text-align:left;
     }
 
     .lead{
       font-size:1.05rem; color:var(--sub);
-      margin:0 0 10px; text-align:left;
-      max-width:56rem;
+      margin:0 0 10px; text-align:left; max-width:56rem;
     }
     .lead a{ color:var(--accent); text-decoration:none; }
     .lead a:hover{ color:var(--accent-2); }
@@ -93,7 +96,7 @@
       width:100%;
       border:2px solid #000;
       border-radius:22px;
-      padding:42px 28px 36px; /* top padding gives header + pills breathing room */
+      padding:52px 28px 36px;  /* extra top padding under perched cats */
       background:#fff;
       overflow:visible;
     }
@@ -101,32 +104,33 @@
       font-size:1rem; text-align:center; margin:0 0 20px; color:var(--sub);
     }
 
-    /* Cats: sit on top border, aligned as a pair on the right */
+    /* Cats: really perched, really close together */
     .cats{
       position:absolute;
-      top:0;
+      top:-44px;               /* sit above the border, not inside */
       right:16px;
-      transform:translateY(-50%); /* perch on the border */
       display:flex;
       align-items:flex-end;
-      gap:4px;                    /* visual closeness */
+      gap:2px;                 /* minimal spacing */
       z-index:10;
     }
-    /* mask the border below the cats to make them look seated */
-    .cats::before{
+    /* hide the border line under their paws so it looks natural */
+    .cats::after{
       content:"";
       position:absolute;
-      left:-8px; right:-8px; top:50%;
-      height:8px; transform:translateY(-50%);
+      left:-8px; right:-8px;
+      bottom:-4px;             /* tiny overlap on the frame border */
+      height:8px;
       background:#fff;
       z-index:-1;
       border-radius:999px;
+      pointer-events:none;
     }
 
     .cat{
       position:relative;
-      width:160px; height:88px;   /* shared visual size */
-      --y: 0px;                   /* per-image vertical nudge */
+      width:160px; height:88px;   /* unify visual size */
+      --y:0px;                     /* per-image bottom nudge to cancel PNG whitespace */
     }
     .cat button{
       width:100%; height:100%;
@@ -134,14 +138,14 @@
       appearance:none; -webkit-appearance:none;
       background-repeat:no-repeat;
       background-size:contain;
-      background-position:center calc(100% + var(--y)); /* fight PNG whitespace */
+      background-position:center calc(100% + var(--y));
       outline:none; box-shadow:none; -webkit-tap-highlight-color:transparent;
     }
 
-    /* State swaps */
-    .cat--grey button{ background-image:var(--cat-grey-sleep); }
-    .cat--grey button:hover,
-    .cat--grey button:focus-visible{ background-image:var(--cat-grey-awake); }
+    /* Hover swaps */
+    .cat--grey  button{ background-image:var(--cat-grey-sleep); }
+    .cat--grey  button:hover,
+    .cat--grey  button:focus-visible{ background-image:var(--cat-grey-awake); }
 
     .cat--white button{ background-image:var(--cat-white-sleep); }
     .cat--white button:hover,
@@ -156,12 +160,10 @@
 
     .footer{ color:var(--sub); font-size:.9rem; margin-top:10px; }
 
-    /* Click-spawned emoji for Tobi */
+    /* Tobi click pop (spawns at click point) */
     .boom{
       position:absolute;
-      font-size:24px;
-      line-height:1;
-      pointer-events:none;
+      font-size:24px; line-height:1; pointer-events:none;
       transform:translate(-50%,-50%) scale(.85);
       animation:pop-fade .7s ease-out forwards;
       filter:drop-shadow(0 1px 0 rgba(0,0,0,.12));
@@ -172,7 +174,7 @@
       100%{ opacity:0; transform:translate(-50%,-90%) scale(1) rotate(0); }
     }
 
-    /* Floating heart for Kono */
+    /* Kono heart & thought bubble */
     .heart{
       position:absolute; left:50%; top:28%;
       transform:translateX(-50%);
@@ -186,7 +188,6 @@
       100%{ transform:translate(-50%,-44px) scale(1); opacity:0; }
     }
 
-    /* Kono's occasional thought bubble */
     .thought{
       position:absolute;
       left:20%;
@@ -212,10 +213,11 @@
     @media (max-width:780px){
       h1{ font-size:2.2em; max-width:42rem; }
       .cat{ width:138px; height:76px; }
-      .cats{ right:10px; gap:2px; }
+      .cats{ right:10px; gap:2px; top:-38px; }
+      .feature{ padding-top:48px; }
     }
 
-    /* Hidden warm-up to keep hover swaps instant */
+    /* Warm-up the hover sprites */
     .preload{ position:absolute; left:-9999px; width:0; height:0; overflow:hidden;
       background-image: var(--cat-grey-awake), var(--cat-white-ears);
     }
@@ -278,21 +280,18 @@
     const heart = white.querySelector('.heart');
     whiteBtn.addEventListener('click', () => {
       heart.classList.remove('float');
-      // small horizontal jitter so repeats feel alive
-      heart.style.left = (45 + Math.random()*10) + '%';
+      heart.style.left = (45 + Math.random()*10) + '%'; // small jitter
       void heart.offsetWidth;
       heart.classList.add('float');
     });
 
-    // Tobi (grey): spawn a ⁉️ exactly where the user clicks
+    // Tobi (grey): spawn a ⁉️ exactly where user clicks
     const grey = document.querySelector('.cat--grey');
     const greyBtn = grey.querySelector('button');
-
     greyBtn.addEventListener('click', (e) => {
       const box = greyBtn.getBoundingClientRect();
       const x = e.clientX - box.left;
       const y = e.clientY - box.top;
-
       const span = document.createElement('span');
       span.className = 'boom';
       span.textContent = '⁉️';
@@ -302,7 +301,7 @@
       span.addEventListener('animationend', () => span.remove(), {once:true});
     });
 
-    // Kono: occasional thought bubble with random foods (no interaction needed)
+    // Kono: occasional thought bubble (no interaction)
     const thought = white.querySelector('.thought');
     const foods = ['🍣','🐟','🍗','🥟','🧀','🍤','🍜'];
 
@@ -310,15 +309,13 @@
       const delay = 8000 + Math.random()*8000; // 8–16s
       setTimeout(() => {
         if (!thought) return;
-        if (!reduceMotion) {
-          thought.textContent = foods[Math.floor(Math.random()*foods.length)] + ' …dreaming…';
-        } else {
-          thought.textContent = '…';
-        }
+        thought.textContent = reduceMotion
+          ? '…'
+          : foods[Math.floor(Math.random()*foods.length)] + ' …dreaming…';
         thought.classList.add('show');
         setTimeout(() => {
           thought.classList.remove('show');
-          scheduleThought(); // loop
+          scheduleThought();    // loop
         }, 2500);
       }, delay);
     }
