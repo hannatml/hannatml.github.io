@@ -41,4 +41,245 @@
       -moz-osx-font-smoothing: grayscale;
     }
 
-    .wrap{ max-width
+    .wrap{ max-width:1100px; margin:48px auto 80px; padding:0 24px; }
+
+    .badge{
+      display:inline-flex; align-items:center; gap:.5ch;
+      font-size:.95rem; color:var(--sub);
+      background:#fff; border:1.5px solid #000; border-radius:999px;
+      padding:.35rem .75rem; box-shadow:0 2px 0 #000;
+    }
+
+    /* header text uses Akaya Telivigala */
+    h1{
+      font-family:"Akaya Telivigala", system-ui;
+      font-weight:400;
+      font-size:clamp(2.4rem, 4.8vw + 1rem, 4.4rem);
+      line-height:1.05;
+      color:var(--green);
+      letter-spacing:.2px;
+      margin:.9rem 0 1.25rem;
+    }
+
+    .lead{
+      font-size:1.15rem; color:var(--sub); max-width:60ch; margin:0 0 24px;
+    }
+    .lead a{ color:var(--accent); text-decoration:none; }
+    .lead a:hover{ color:var(--accent-2); }
+
+    /* feature box the cats perch on */
+    .feature{
+      position:relative; margin-top:28px;
+      border:2px solid #000; border-radius:22px;
+      padding:28px 28px 36px; background:#fff; box-shadow:0 6px 0 #000;
+      overflow:visible;
+    }
+    .feature h2{ font-size:1rem; text-align:center; margin:2px 0 18px; color:var(--sub); }
+
+    .chips{ display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
+    .chip{ background:#1f1f1f; color:#fff; font-size:.9rem; padding:.35rem .65rem; border-radius:999px; }
+
+    /* cats cluster */
+    .cats{
+      position:absolute; top:-34px; right:24px;
+      display:flex; gap:10px; z-index:3; pointer-events:none;
+    }
+    /* mask the border under the cats so they look seated on it */
+    .cats::after{
+      content:""; position:absolute; left:8px; right:8px; bottom:-2px; height:6px;
+      background:#fff; z-index:-1;
+    }
+
+    .cat{
+      --w: 200px;    /* tweak overall size here */
+      --h: 106px;
+      --y-offset: 0px;  /* per-image bottom whitespace compensation */
+      width:var(--w); height:var(--h);
+      position:relative; pointer-events:auto; overflow:visible;
+    }
+
+    .cat button{
+      width:100%; height:100%;
+      border:0; background:transparent; cursor:pointer;
+      appearance:none; -webkit-appearance:none;
+      background-repeat:no-repeat; background-size:contain;
+      /* anchor to bottom, then push bottom by --y-offset to counter PNG padding */
+      background-position:center calc(100% + var(--y-offset));
+      transition:background-image 0s, opacity .2s ease;
+      outline:none;               /* no default outline */
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* ✅ no border on hover; only show a ring for keyboard users */
+    .cat button:hover{ outline:none; box-shadow:none; }
+    .cat button:focus{ outline:none; }
+    .cat button:focus-visible{
+      box-shadow:0 0 0 2px var(--accent-2);
+      border-radius:12px; /* subtle ring, not around the image itself */
+    }
+
+    /* grey cat hover → awake */
+    .cat--grey button{ background-image:var(--cat-grey-sleep); }
+    .cat--grey button:hover,
+    .cat--grey button:focus-visible{ background-image:var(--cat-grey-awake); }
+
+    /* ⁉️ anger mark as emoji, above ear */
+    .scribble{
+      position:absolute; z-index:4; pointer-events:none;
+      top:-26px; right:8px; font-size:44px; line-height:1;
+      opacity:0; transform-origin:bottom left;
+    }
+    .scribble.show{ animation:popFade .7s ease forwards; }
+
+    /* white cat hover → perk ears */
+    .cat--white button{ background-image:var(--cat-white-sleep); }
+    .cat--white button:hover,
+    .cat--white button:focus-visible{ background-image:var(--cat-white-ears); }
+
+    /* ❤️ floating heart (emoji) */
+    .heart{
+      position:absolute; left:50%; top:22%;
+      transform:translateX(-50%);
+      font-size:26px; line-height:1; opacity:0; pointer-events:none; z-index:4;
+    }
+    .heart.float{ animation:floatUp 900ms ease-out forwards; }
+
+    /* thought bubble with food text */
+    .thought{
+      position:absolute; left:22%; top:-18px; z-index:4;
+      background:#2f2f2f; color:#fff; font-size:.9rem;
+      padding:6px 10px 7px; border-radius:12px; box-shadow:0 2px 6px rgba(0,0,0,.18);
+      opacity:0; transform:translateY(6px) scale(.98); pointer-events:none; white-space:nowrap;
+    }
+    .thought::after{
+      content:""; position:absolute; left:14px; bottom:-6px; width:10px; height:10px; background:#2f2f2f; transform:rotate(45deg); border-radius:2px;
+    }
+    .thought.show{ animation:riseIn .25s ease-out forwards, hold 2.2s linear .25s forwards, fadeOut .3s ease 2.45s forwards; }
+
+    /* animations */
+    @keyframes floatUp{
+      0%{ transform:translate(-50%,0) scale(.9); opacity:0; }
+      15%{ opacity:1; }
+      70%{ transform:translate(-50%,-36px) scale(1.1); }
+      100%{ transform:translate(-50%,-48px) scale(1); opacity:0; }
+    }
+    @keyframes popFade{
+      0%{ transform:scale(.6) rotate(-6deg); opacity:0; }
+      30%{ transform:scale(1.05) rotate(2deg); opacity:1; }
+      100%{ transform:scale(1) rotate(0); opacity:0; }
+    }
+    @keyframes riseIn{ to{ opacity:1; transform:translateY(0) scale(1);} }
+    @keyframes hold{ to{ opacity:1; } }
+    @keyframes fadeOut{ to{ opacity:0; } }
+
+    /* responsive */
+    @media (max-width:700px){
+      .wrap{ margin:32px auto 64px; }
+      .cats{ top:-26px; right:14px; gap:8px; }
+      .cat{ --w:160px; --h:85px; }
+      .scribble{ top:-20px; right:6px; font-size:36px; }
+      .thought{ left:18%; }
+    }
+
+    /* reduced motion */
+    @media (prefers-reduced-motion: reduce){
+      .heart.float,.scribble.show,.thought.show{ animation:none; opacity:1; }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="wrap">
+    <div class="badge">☁️  howdy, i’m hanna!</div>
+
+    <h1>austin-based designer uncovering intuitive + enjoyable experiences in complex systems.</h1>
+
+    <p class="lead">
+      currently at <a href="https://www.leveltenenergy.com/" target="_blank" rel="noopener">LevelTen Energy</a>.
+      previously: <a href="https://data.world/home/" target="_blank" rel="noopener">data.world</a>,
+      <a href="https://www.mcmaster.com/" target="_blank" rel="noopener">McMaster-Carr</a>.
+    </p>
+
+    <section class="feature">
+      <!-- Cats perched on the border -->
+      <div class="cats" aria-hidden="true">
+        <!-- Grey cat (Tobi) -->
+        <div class="cat cat--grey">
+          <!-- adjust --y-offset if your PNG has extra transparent bottom -->
+          <button aria-label="grey cat — hover to wake, click to annoy" style="--y-offset: 10px;"></button>
+          <div class="scribble" aria-hidden="true">⁉️</div>
+        </div>
+
+        <!-- White cat (Kono) -->
+        <div class="cat cat--white">
+          <button aria-label="white cat — hover to perk ears, click for heart" style="--y-offset: 12px;"></button>
+          <div class="heart" aria-hidden="true">❤️</div>
+          <div class="thought" aria-hidden="true">🍣 …dreaming…</div>
+        </div>
+      </div>
+
+      <h2>some things i especially like</h2>
+      <div class="chips" role="list">
+        <span class="chip" role="listitem">technical spaces</span>
+        <span class="chip" role="listitem">flexbox</span>
+        <span class="chip" role="listitem">inspect tools</span>
+        <span class="chip" role="listitem">inclusive design</span>
+        <span class="chip" role="listitem">sociological framing</span>
+        <span class="chip" role="listitem">non-traditional interfaces</span>
+        <span class="chip" role="listitem">systems design</span>
+        <span class="chip" role="listitem">my cats ^-^</span>
+      </div>
+    </section>
+
+    <p style="margin-top:28px; color:var(--sub); font-size:.9rem;">made with care • dec 2024</p>
+  </main>
+
+  <script>
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // White cat (Kono)
+    const whiteCat = document.querySelector('.cat--white');
+    const whiteBtn = whiteCat.querySelector('button');
+    const heart = whiteCat.querySelector('.heart');
+    const thought = whiteCat.querySelector('.thought');
+
+    whiteBtn.addEventListener('click', () => {
+      heart.classList.remove('float');
+      heart.style.left = (45 + Math.random()*10) + '%'; // tiny jitter
+      void heart.offsetWidth; // restart animation
+      heart.classList.add('float');
+    });
+
+    function scheduleThought(){
+      const delay = 8000 + Math.random()*8000;
+      setTimeout(() => {
+        if (!reduceMotion) {
+          const foods = ['🍣','🐟','🍗','🥟','🧀','🍤','🍜'];
+          thought.textContent = foods[Math.floor(Math.random()*foods.length)] + ' …dreaming…';
+        }
+        thought.classList.add('show');
+        setTimeout(() => {
+          thought.classList.remove('show');
+          scheduleThought();
+        }, 2750);
+      }, delay);
+    }
+    scheduleThought();
+
+    // Grey cat (Tobi)
+    const greyCat = document.querySelector('.cat--grey');
+    const greyBtn = greyCat.querySelector('button');
+    const scribble = greyCat.querySelector('.scribble');
+
+    greyBtn.addEventListener('click', () => {
+      scribble.classList.remove('show');
+      void scribble.offsetWidth; // restart animation
+      scribble.classList.add('show');
+    });
+
+    // Set initial images (hover swaps handled in CSS)
+    document.querySelector('.cat--grey button').style.backgroundImage = getComputedStyle(document.documentElement).getPropertyValue('--cat-grey-sleep');
+    document.querySelector('.cat--white button').style.backgroundImage = getComputedStyle(document.documentElement).getPropertyValue('--cat-white-sleep');
+  </script>
+</body>
+</html>
