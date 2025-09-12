@@ -4,77 +4,73 @@ title: home
 permalink: /
 ---
 
+<!-- Page-scoped styles (home only) -->
 <style>
-/* Font for the hero */
 @import url('https://fonts.googleapis.com/css2?family=Akaya+Telivigala&display=swap');
 
-/* Background gradient (subtle green, top-left) */
-html, body {
+/* Background like your earlier mock */
+body {
   background:
-    radial-gradient(1200px 600px at 0% 0%, #eaf6e5 0%, #ffffff 60%) no-repeat fixed;
+    radial-gradient(900px 500px at 0% 0%, #e8f6e5 0%, rgba(232,246,229,0) 60%) no-repeat,
+    #ffffff;
 }
 
-/* Hide site nav + page title just on home */
-.navbar, .page-header, .page-title, .site-title { display: none !important; }
+/* Hide site nav only on this page */
+.navbar { display: none !important; }
 
-/* Kill any theme borders/outlines on images */
+/* Kill borders/outlines on images inside links */
 a img, img { border: 0 !important; outline: none !important; }
 
 /* Hero */
-.home-hero { padding: clamp(24px, 6vw, 72px) 0; }
-.hero-title {
+.home-hero { padding: clamp(24px, 6vw, 72px) 0 12px; }
+.hero-title{
   font-family: 'Akaya Telivigala', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
   font-weight: 400;
   font-size: clamp(36px, 5.8vw, 92px);
   line-height: 1.06;
-  color: #1b2b18;
+  color: #294a23;
   margin: .5rem 0 1.25rem;
 }
-.subtitle { max-width: 58ch; color: #3e5640; }
+.subtitle{
+  max-width: 58ch;
+  color: #4a5c49;
+}
 
-/* Simple content box the cats sit on */
-.content-box {
+/* Simple content frame (cats perch on the top border) */
+.content-frame{
   position: relative;
-  margin: clamp(24px, 6vw, 64px) auto;
+  margin-top: clamp(28px, 5vw, 56px);
   border: 3px solid #111;
   border-radius: 24px;
-  background: rgba(255,255,255,.9);
-  box-shadow: 6px 6px 0 #111;
-  min-height: 220px; /* feels roomy; adjust as you add content */
+  background: #fff;
+  min-height: 180px; /* empty on purpose per your request */
+  box-shadow: 6px 6px 0 #111; /* subtle depth; remove if you want it flatter */
 }
 
-/* Cats perched on the top border (right corner) */
-.cats-perch {
+/* Cats living on the frame’s top edge */
+.frame-cats{
   position: absolute;
-  top: -52px;              /* sits on the border */
-  right: 24px;
+  top: -52px;                 /* sits on the border */
+  right: clamp(12px, 3vw, 28px);
   display: flex;
   gap: 16px;
-  z-index: 2;
 }
-.cat {
+.cat{
   position: relative;
-  width: 96px;
-  height: 96px;
+  width: 96px; height: 96px;
   display: inline-block;
 }
-.cat img {
+.cat img{
   position: absolute; inset: 0;
   width: 100%; height: 100%;
   object-fit: contain;
   transition: opacity .18s ease;
 }
-.cat .awake { opacity: 0; }
-.cat:hover .awake { opacity: 1; }
-.cat:hover .sleep { opacity: 0; }
-/* Click feedback without borders */
-.cat:active { transform: translateY(1px) scale(.99); }
-
-/* Inner content area (empty for now; add whatever you want later) */
-.box-body {
-  padding: clamp(18px, 3vw, 28px);
-  min-height: 180px;
-}
+.cat .awake{ opacity: 0; }
+.cat:hover .awake{ opacity: 1; }
+.cat:hover .sleep{ opacity: 0; }
+/* tactile click without borders */
+.cat:active{ transform: translateY(1px) scale(.99); }
 </style>
 
 <div class="container home-hero">
@@ -90,23 +86,21 @@ a img, img { border: 0 !important; outline: none !important; }
     currently at <a href="https://www.leveltenenergy.com">LevelTen Energy</a>. previously:
     <a href="https://data.world">data.world</a>, <a href="https://www.mcmaster.com">McMaster–Carr</a>.
   </p>
+
+  <!-- Simple framed area; cats perch on the top edge -->
+  <section class="content-frame">
+    <div class="frame-cats" aria-hidden="true">
+      <!-- Grey cat -->
+      <a class="cat" href="#" tabindex="-1">
+        <img class="sleep" src="/assets/img/cats/grey-sleep.png" alt="">
+        <img class="awake" src="/assets/img/cats/grey-awake.png" alt="">
+      </a>
+      <!-- White cat -->
+      <a class="cat" href="#" tabindex="-1">
+        <img class="sleep" src="/assets/img/cats/white-sleep.png" alt="">
+        <img class="awake" src="/assets/img/cats/white-awake.png" alt="">
+      </a>
+    </div>
+    <!-- leave empty or add future content inside the frame -->
+  </section>
 </div>
-
-<section class="container content-box">
-  <!-- Cats perched on the top edge -->
-  <div class="cats-perch">
-    <!-- Grey cat -->
-    <span class="cat" aria-hidden="true">
-      <img class="sleep" src="/assets/img/cats/grey-sleep.png" alt="">
-      <img class="awake" src="/assets/img/cats/grey-awake.png" alt="">
-    </span>
-    <!-- White cat -->
-    <span class="cat" aria-hidden="true">
-      <img class="sleep" src="/assets/img/cats/white-sleep.png" alt="">
-      <img class="awake" src="/assets/img/cats/white-awake.png" alt="">
-    </span>
-  </div>
-
-  <!-- Your content lives here (left empty by request) -->
-  <div class="box-body"></div>
-</section>
