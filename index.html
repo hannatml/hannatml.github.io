@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-
   <title>hanna gratch</title>
 
   <!-- Fonts -->
@@ -11,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Akaya+Telivigala&family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet"/>
 
-  <!-- Preload images to avoid first-hover flicker -->
+  <!-- Preload images -->
   <link rel="preload" as="image" href="tobi-asleep.png">
   <link rel="preload" as="image" href="tobi-awake.png">
   <link rel="preload" as="image" href="kono-chillin.png">
@@ -27,10 +26,11 @@
       --cat-white-sleep:url('kono-chillin.png');
       --cat-white-ears:url('kono-happy.png');
 
-      /* Cat sizing + overlap controls */
-      --catW: 196px;         /* bigger cats */
-      --catH: 108px;
-      --catOverlap: -18px;   /* pull them closer together visually */
+      /* Bigger cats + precise overlap */
+      --catW: 228px;      /* cat width  (desktop)  */
+      --catH: 128px;      /* cat height (desktop)  */
+      --overlap: 72px;    /* how much the second cat overlaps the first */
+      --perchPad: 38px;   /* how much of the cat sits "inside" the frame */
     }
 
     html,body{height:100%}
@@ -45,7 +45,7 @@
       -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
     }
 
-    /* Center the entire content block both ways */
+    /* Center the whole content block */
     .page{
       min-height:100dvh;
       display:grid;
@@ -54,7 +54,6 @@
       box-sizing:border-box;
     }
 
-    /* The centered block (left-aligned contents) */
     .wrap{
       width:min(1100px, calc(100% - 64px));
       margin:0 auto;
@@ -70,18 +69,13 @@
       padding:.35rem .75rem;
     }
 
-    /* Header */
+    /* Header + lead */
     h1{
       font-family:"Akaya Telivigala", system-ui;
       font-weight:400; font-size:2.6em; line-height:1.12;
-      color:var(--green);
-      margin:8px 0 6px; text-align:left; max-width:56rem;
+      color:var(--green); margin:8px 0 6px; max-width:56rem; text-align:left;
     }
-
-    .lead{
-      font-size:1.05rem; color:var(--sub);
-      margin:0; text-align:left; max-width:56rem;
-    }
+    .lead{ font-size:1.05rem; color:var(--sub); margin:0; max-width:56rem; }
     .lead a{ color:var(--accent); text-decoration:none; }
     .lead a:hover{ color:var(--accent-2); }
 
@@ -90,65 +84,60 @@
       position:relative;
       width:100%;
       border:2px solid #000; border-radius:22px;
-      padding:60px 28px 36px;  /* extra top padding under perched cats */
-      margin-top: clamp(28px, 6.5vw, 72px); /* keep cats from overlapping text */
+      padding:60px 28px 36px;            /* breathing room inside */
+      /* Dynamic spacing above: equals how much cat sticks out plus a base */
+      margin-top: max(28px, calc((var(--catH) - var(--perchPad)) + 16px));
       background:#fff; overflow:visible;
     }
-    .feature h2{
-      font-size:1rem; text-align:center; margin:0 0 20px; color:var(--sub);
-    }
+    .feature h2{ font-size:1rem; text-align:center; margin:0 0 20px; color:var(--sub); }
 
-    /* Cats: perched and truly close together (accounting for PNG whitespace) */
+    /* CAT LAYER
+       We stop fighting PNG padding by using absolute positions + explicit overlap.
+       Container width = catW + (catW - overlap). */
     .cats{
-      position:absolute; top:calc(-1 * var(--catH) + 36px); /* perch above border */
+      position:absolute;
+      top: calc(-1 * (var(--catH) - var(--perchPad))); /* perch on border */
       right:16px;
-      display:flex; align-items:flex-end; gap:0; z-index:10;
+      width: calc(var(--catW) * 2 - var(--overlap));
+      height: var(--catH);
+      z-index:10;
     }
-    /* slight white strip to hide the frame border under paws */
+    /* tiny white strip to hide the frame border under paws */
     .cats::after{
       content:""; position:absolute; left:-6px; right:-6px; bottom:-4px; height:8px;
       background:#fff; z-index:-1; pointer-events:none; border-radius:999px;
     }
 
     .cat{
-      position:relative;
+      position:absolute; bottom:0;
       width:var(--catW); height:var(--catH);
-      --x: 0px;  /* per-image horizontal nudge (combats transparent side padding) */
-      --y: 0px;  /* per-image vertical nudge (combats transparent bottom) */
-      z-index:1;
+      --x:0px; --y:0px; /* per-image nudge (for PNG whitespace) */
     }
-    /* Overlap the second cat slightly to remove the “air gap” from PNG padding */
-    .cat + .cat{ margin-left: var(--catOverlap); }
-    .cat:hover{ z-index:2; } /* keep hover above overlap */
+    .cat--grey{ left:0;  transform:translateX(var(--x)); }
+    .cat--white{ left: calc(var(--catW) - var(--overlap)); transform:translateX(var(--x)); }
 
     .cat button{
       width:100%; height:100%;
       border:0; background:transparent; cursor:pointer;
       appearance:none; -webkit-appearance:none;
       background-repeat:no-repeat; background-size:contain;
-      background-position: calc(50% + var(--x)) calc(100% + var(--y));
+      background-position: calc(50%) calc(100% + var(--y));
       outline:none; box-shadow:none; -webkit-tap-highlight-color:transparent;
     }
 
     /* Hover swaps */
     .cat--grey  button{ background-image:var(--cat-grey-sleep); }
-    .cat--grey  button:hover,
-    .cat--grey  button:focus-visible{ background-image:var(--cat-grey-awake); }
-
+    .cat--grey  button:hover, .cat--grey  button:focus-visible{ background-image:var(--cat-grey-awake); }
     .cat--white button{ background-image:var(--cat-white-sleep); }
-    .cat--white button:hover,
-    .cat--white button:focus-visible{ background-image:var(--cat-white-ears); }
+    .cat--white button:hover, .cat--white button:focus-visible{ background-image:var(--cat-white-ears); }
 
     /* Pills */
     .chips{ display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
-    .chip{
-      background:#1f1f1f; color:#fff; font-size:.9rem;
-      padding:.35rem .65rem; border-radius:999px; white-space:nowrap;
-    }
+    .chip{ background:#1f1f1f; color:#fff; font-size:.9rem; padding:.35rem .65rem; border-radius:999px; white-space:nowrap; }
 
     .footer{ color:var(--sub); font-size:.9rem; margin-top:10px; }
 
-    /* Tobi click pop (spawns at click point) */
+    /* Tobi click pop */
     .boom{
       position:absolute; font-size:24px; line-height:1; pointer-events:none;
       transform:translate(-50%,-50%) scale(.85);
@@ -161,9 +150,9 @@
       100%{ opacity:0; transform:translate(-50%,-90%) scale(1) rotate(0); }
     }
 
-    /* Kono heart & thought bubble */
+    /* Kono heart + thought bubble */
     .heart{
-      position:absolute; left:50%; top:30%;
+      position:absolute; left:52%; top:32%;
       transform:translateX(-50%);
       font-size:24px; line-height:1; opacity:0; pointer-events:none;
     }
@@ -176,40 +165,35 @@
     }
 
     .thought{
-      position:absolute;
-      left:22%; top:-18px;
-      background:#2f2f2f; color:#fff;
-      font-size:.95rem; line-height:1;
-      padding:6px 10px 7px;
-      border-radius:12px;
-      opacity:0; transform:translateY(6px) scale(.98);
-      pointer-events:none; white-space:nowrap; z-index:12;
+      position:absolute; left:64%; top:-18px;
+      background:#2f2f2f; color:#fff; font-size:.95rem; line-height:1;
+      padding:6px 10px 7px; border-radius:12px; white-space:nowrap;
+      opacity:0; transform:translateY(6px) scale(.98); pointer-events:none; z-index:12;
     }
     .thought::after{
-      content:""; position:absolute; left:12px; bottom:-6px;
-      width:10px; height:10px; background:#2f2f2f;
-      transform:rotate(45deg); border-radius:2px;
+      content:""; position:absolute; left:12px; bottom:-6px; width:10px; height:10px;
+      background:#2f2f2f; transform:rotate(45deg); border-radius:2px;
     }
     .thought.show{ animation:riseIn .22s ease-out forwards, hold 2s linear .22s forwards, fadeOut .28s ease 2.22s forwards; }
     @keyframes riseIn{ to{ opacity:1; transform:translateY(0) scale(1);} }
     @keyframes hold{ to{ opacity:1; } }
     @keyframes fadeOut{ to{ opacity:0; } }
 
-    /* Small screens */
+    /* Responsive knobs: keep them big but fitting; overlap maintained */
     @media (max-width:780px){
-      h1{ font-size:2.2em; max-width:42rem; }
-      :root{
-        --catW: 158px;
-        --catH: 90px;
-        --catOverlap: -14px;
-      }
-      .cats{ right:10px; }
-      .feature{ padding-top:58px; margin-top: clamp(40px, 12vw, 96px); }
-      .heart{ font-size:22px; top:30%; }
-      .thought{ left:24%; top:-16px; font-size:.9rem; }
+      :root{ --catW: 210px; --catH: 118px; --overlap: 68px; --perchPad: 36px; }
+      h1{ font-size:2.2em; }
+      .feature{ padding-top:60px; }
+      .heart{ font-size:22px; top:32%; }
+      .thought{ left:62%; top:-16px; font-size:.9rem; }
+    }
+    @media (max-width:420px){
+      :root{ --catW: 180px; --catH: 102px; --overlap: 56px; --perchPad: 34px; }
+      .feature{ padding-top:58px; }
+      .thought{ left:60%; }
     }
 
-    /* Warm-up the hover sprites */
+    /* Warm-up */
     .preload{ position:absolute; left:-9999px; width:0; height:0; overflow:hidden;
       background-image: var(--cat-grey-awake), var(--cat-white-ears);
     }
@@ -231,14 +215,14 @@
       </p>
 
       <section class="feature">
-        <!-- Cats perched on the frame -->
+        <!-- Cats perched and overlapped -->
         <div class="cats" aria-hidden="true">
-          <!-- Tobi (grey): adjust x/y to cancel PNG padding -->
-          <div class="cat cat--grey" style="--x:6px; --y:10px">
+          <!-- Tobi (grey) -->
+          <div class="cat cat--grey" style="--x:6px; --y:12px">
             <button aria-label="grey cat — hover to wake, click to grumble"></button>
           </div>
 
-          <!-- Kono (white): slight opposite nudge; sits closer to Tobi -->
+          <!-- Kono (white) -->
           <div class="cat cat--white" style="--x:-4px; --y:12px">
             <button aria-label="white cat — hover to perk ears, click for heart"></button>
             <div class="heart" aria-hidden="true">❤️</div>
@@ -266,49 +250,41 @@
   <script>
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // Kono (white): float a heart on click
+    // Kono (white): heart on click
     const white = document.querySelector('.cat--white');
     const whiteBtn = white.querySelector('button');
     const heart = white.querySelector('.heart');
     whiteBtn.addEventListener('click', () => {
       heart.classList.remove('float');
-      heart.style.left = (45 + Math.random()*10) + '%'; // tiny jitter
+      heart.style.left = (48 + Math.random()*6) + '%';
       void heart.offsetWidth;
       heart.classList.add('float');
     });
 
-    // Tobi (grey): spawn a ⁉️ exactly where user clicks
+    // Tobi (grey): ⁉️ where you click
     const grey = document.querySelector('.cat--grey');
     const greyBtn = grey.querySelector('button');
     greyBtn.addEventListener('click', (e) => {
-      const box = greyBtn.getBoundingClientRect();
-      const x = e.clientX - box.left;
-      const y = e.clientY - box.top;
-      const span = document.createElement('span');
-      span.className = 'boom';
-      span.textContent = '⁉️';
-      span.style.left = x + 'px';
-      span.style.top  = y + 'px';
-      greyBtn.parentElement.appendChild(span);
-      span.addEventListener('animationend', () => span.remove(), {once:true});
+      const r = greyBtn.getBoundingClientRect();
+      const x = e.clientX - r.left, y = e.clientY - r.top;
+      const s = document.createElement('span');
+      s.className = 'boom'; s.textContent = '⁉️';
+      s.style.left = x + 'px'; s.style.top = y + 'px';
+      greyBtn.parentElement.appendChild(s);
+      s.addEventListener('animationend', () => s.remove(), {once:true});
     });
 
-    // Kono: occasional thought bubble (no interaction)
+    // Kono: occasional thought bubble (auto)
     const thought = white.querySelector('.thought');
     const foods = ['🍣','🐟','🍗','🥟','🧀','🍤','🍜'];
-
     function scheduleThought(){
       const delay = 8000 + Math.random()*8000; // 8–16s
       setTimeout(() => {
         if (!thought) return;
-        thought.textContent = reduceMotion
-          ? '…'
+        thought.textContent = reduceMotion ? '…'
           : foods[Math.floor(Math.random()*foods.length)] + ' …dreaming…';
         thought.classList.add('show');
-        setTimeout(() => {
-          thought.classList.remove('show');
-          scheduleThought(); // loop
-        }, 2500);
+        setTimeout(() => { thought.classList.remove('show'); scheduleThought(); }, 2500);
       }, delay);
     }
     scheduleThought();
