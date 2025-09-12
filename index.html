@@ -31,7 +31,7 @@
       --catH: 128px;      /* cat height (desktop)  */
       --overlap: 72px;    /* how much the second cat overlaps the first */
       --perchPad: 38px;   /* how much of the cat sits "inside" the frame */
-      --catLift: 12px;    /* <-- raise cats above the border by this much */
+      --catLift: 20px;    /* <-- raise cats above the border by this much */
     }
 
     html,body{height:100%}
@@ -165,7 +165,7 @@
     }
 
     .thought{
-      position:absolute; left:64%; top:-18px;
+      position:absolute; left:42%; top:-18px;
       background:#2f2f2f; color:#fff; font-size:.95rem; line-height:1;
       padding:6px 10px 7px; border-radius:12px; white-space:nowrap;
       opacity:0; transform:translateY(6px) scale(.98); pointer-events:none; z-index:12;
@@ -197,6 +197,27 @@
     .preload{ position:absolute; left:-9999px; width:0; height:0; overflow:hidden;
       background-image: var(--cat-grey-awake), var(--cat-white-ears);
     }
+    /* Mobile notice (hidden by default) */
+.mobile-note{
+  position:fixed;
+  bottom:12px; left:50%; transform:translateX(-50%);
+  display:none; align-items:center; gap:.6rem;
+  padding:.55rem .85rem;
+  background:#fff; color:var(--ink);
+  border:2px solid #000; border-radius:999px;
+  z-index:1000; box-shadow:0 2px 0 rgba(0,0,0,.06);
+  font-size:.98rem;
+}
+.mobile-note__close{
+  appearance:none; border:0; background:transparent;
+  font-size:1rem; line-height:1; cursor:pointer; padding:.2rem;
+}
+
+/* Show it on small screens; tweak the breakpoint as you like */
+@media (max-width: 780px){
+  .mobile-note{ display:flex; }
+}
+
   </style>
 </head>
 <body>
@@ -246,6 +267,11 @@
       <p class="footer">sept. 2025</p>
     </main>
   </div>
+  <!-- Mobile-only notice -->
+<div id="mobile-note" class="mobile-note" role="status" aria-live="polite">
+  <span>not mobile optimized. dont judge me i'm just a designer</span>
+  <button type="button" class="mobile-note__close" aria-label="dismiss">✕</button>
+</div>
 
   <script>
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
