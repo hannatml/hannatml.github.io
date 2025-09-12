@@ -1,106 +1,44 @@
----
-layout: default
-title: home
-permalink: /
----
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
 
-<!-- Page-scoped styles (home only) -->
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Akaya+Telivigala&display=swap');
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Akaya+Telivigala&family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet"/>
 
-/* Background like your earlier mock */
-body {
-  background:
-    radial-gradient(900px 500px at 0% 0%, #e8f6e5 0%, rgba(232,246,229,0) 60%) no-repeat,
-    #ffffff;
-}
+  <title>hanna gratch</title>
 
-/* Hide site nav only on this page */
-.navbar { display: none !important; }
+  <style>
+    :root{
+      --ink:#1a1a1a;
+      --sub:#4b4b4b;
+      --green:#4a5d23;
+      --accent:#5e7f3a;
+      --accent-2:#87b35c;
 
-/* Kill borders/outlines on images inside links */
-a img, img { border: 0 !important; outline: none !important; }
+      /* your files */
+      --cat-grey-sleep: url('tobi-asleep.png');
+      --cat-grey-awake: url('tobi-awake.png');
+      --cat-white-sleep: url('kono-chillin.png');
+      --cat-white-ears:  url('kono-happy.png');
+    }
 
-/* Hero */
-.home-hero { padding: clamp(24px, 6vw, 72px) 0 12px; }
-.hero-title{
-  font-family: 'Akaya Telivigala', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-  font-weight: 400;
-  font-size: clamp(36px, 5.8vw, 92px);
-  line-height: 1.06;
-  color: #294a23;
-  margin: .5rem 0 1.25rem;
-}
-.subtitle{
-  max-width: 58ch;
-  color: #4a5c49;
-}
+    /* page */
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:"Sour Gummy", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(900px 560px at 18% 12%, #eefbe0 0%, #ffffff 60%),
+        radial-gradient(1000px 640px at 86% 36%, #f2ffee 0%, #ffffff 65%),
+        #fff;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
 
-/* Simple content frame (cats perch on the top border) */
-.content-frame{
-  position: relative;
-  margin-top: clamp(28px, 5vw, 56px);
-  border: 3px solid #111;
-  border-radius: 24px;
-  background: #fff;
-  min-height: 180px; /* empty on purpose per your request */
-  box-shadow: 6px 6px 0 #111; /* subtle depth; remove if you want it flatter */
-}
-
-/* Cats living on the frame’s top edge */
-.frame-cats{
-  position: absolute;
-  top: -52px;                 /* sits on the border */
-  right: clamp(12px, 3vw, 28px);
-  display: flex;
-  gap: 16px;
-}
-.cat{
-  position: relative;
-  width: 96px; height: 96px;
-  display: inline-block;
-}
-.cat img{
-  position: absolute; inset: 0;
-  width: 100%; height: 100%;
-  object-fit: contain;
-  transition: opacity .18s ease;
-}
-.cat .awake{ opacity: 0; }
-.cat:hover .awake{ opacity: 1; }
-.cat:hover .sleep{ opacity: 0; }
-/* tactile click without borders */
-.cat:active{ transform: translateY(1px) scale(.99); }
-</style>
-
-<div class="container home-hero">
-  <button class="btn btn-light rounded-pill shadow-sm px-3 py-2" aria-label="howdy, i’m hanna!">☁️ howdy, i’m hanna!</button>
-
-  <h1 class="hero-title">
-    austin-based designer<br>
-    uncovering intuitive + enjoyable<br>
-    experiences in complex systems.
-  </h1>
-
-  <p class="subtitle">
-    currently at <a href="https://www.leveltenenergy.com">LevelTen Energy</a>. previously:
-    <a href="https://data.world">data.world</a>, <a href="https://www.mcmaster.com">McMaster–Carr</a>.
-  </p>
-
-  <!-- Simple framed area; cats perch on the top edge -->
-  <section class="content-frame">
-    <div class="frame-cats" aria-hidden="true">
-      <!-- Grey cat -->
-      <a class="cat" href="#" tabindex="-1">
-        <img class="sleep" src="/assets/img/cats/grey-sleep.png" alt="">
-        <img class="awake" src="/assets/img/cats/grey-awake.png" alt="">
-      </a>
-      <!-- White cat -->
-      <a class="cat" href="#" tabindex="-1">
-        <img class="sleep" src="/assets/img/cats/white-sleep.png" alt="">
-        <img class="awake" src="/assets/img/cats/white-awake.png" alt="">
-      </a>
-    </div>
-    <!-- leave empty or add future content inside the frame -->
-  </section>
-</div>
+    .wrap{ max-width
