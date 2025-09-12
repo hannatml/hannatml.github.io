@@ -4,77 +4,77 @@ title: home
 permalink: /
 ---
 
-<!-- Page-scoped styles so changes only affect the home page -->
 <style>
-/* 1) Font: Akaya Telivigala for the hero headings */
+/* Font for the hero */
 @import url('https://fonts.googleapis.com/css2?family=Akaya+Telivigala&display=swap');
 
-/* 2) Hide the site nav on the home page */
-.navbar { display: none !important; }
-
-/* 3) Global fixes: no borders on linked images; keep accessible focus on links */
-a img, img { border: 0 !important; outline: none !important; }
-.project-card a:focus-visible,
-a.stretched-link:focus-visible {
-  outline: 2px solid var(--accent, #396a2a);
-  outline-offset: 4px;
-  border-radius: 12px;
+/* Background gradient (subtle green, top-left) */
+html, body {
+  background:
+    radial-gradient(1200px 600px at 0% 0%, #eaf6e5 0%, #ffffff 60%) no-repeat fixed;
 }
-.project-card a:focus-visible img { outline: none; }
 
-/* 4) Hero typography + layout */
+/* Hide site nav + page title just on home */
+.navbar, .page-header, .page-title, .site-title { display: none !important; }
+
+/* Kill any theme borders/outlines on images */
+a img, img { border: 0 !important; outline: none !important; }
+
+/* Hero */
 .home-hero { padding: clamp(24px, 6vw, 72px) 0; }
 .hero-title {
   font-family: 'Akaya Telivigala', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
   font-weight: 400;
   font-size: clamp(36px, 5.8vw, 92px);
   line-height: 1.06;
-  letter-spacing: .2px;
-  color: var(--text, #1b2b18);
+  color: #1b2b18;
   margin: .5rem 0 1.25rem;
 }
-.subtitle {
-  max-width: 58ch;
-  color: var(--muted, #3e5640);
-}
+.subtitle { max-width: 58ch; color: #3e5640; }
 
-/* 5) Likes panel (keeps your rounded rectangle vibe) */
-.panel {
-  margin-top: clamp(28px, 5vw, 56px);
+/* Simple content box the cats sit on */
+.content-box {
+  position: relative;
+  margin: clamp(24px, 6vw, 64px) auto;
   border: 3px solid #111;
   border-radius: 24px;
-  padding: clamp(16px, 3.2vw, 36px);
+  background: rgba(255,255,255,.9);
   box-shadow: 6px 6px 0 #111;
-  background: white;
-}
-.panel h3 {
-  text-align: center;
-  font-weight: 700;
-  margin-bottom: 18px;
-}
-.chips { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
-.chip {
-  display: inline-block;
-  padding: 6px 12px;
-  border-radius: 999px;
-  background: #111;
-  color: #fff;
-  font-weight: 600;
-  font-size: 14px;
+  min-height: 220px; /* feels roomy; adjust as you add content */
 }
 
-/* 6) Cat drawings: hover = awake; no borders/outlines on the images themselves */
-.cats { position: relative; display: flex; gap: 24px; justify-content: center; margin-top: 12px; }
-.cat { position: relative; width: 96px; height: 96px; display: inline-block; }
-.cat img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; transition: opacity .18s ease; }
-.cat .cat-awake { opacity: 0; }
-.cat:hover .cat-awake { opacity: 1; }
-.cat:hover .cat-sleep { opacity: 0; }
-/* Optional: make click feel responsive without adding borders */
+/* Cats perched on the top border (right corner) */
+.cats-perch {
+  position: absolute;
+  top: -52px;              /* sits on the border */
+  right: 24px;
+  display: flex;
+  gap: 16px;
+  z-index: 2;
+}
+.cat {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  display: inline-block;
+}
+.cat img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: contain;
+  transition: opacity .18s ease;
+}
+.cat .awake { opacity: 0; }
+.cat:hover .awake { opacity: 1; }
+.cat:hover .sleep { opacity: 0; }
+/* Click feedback without borders */
 .cat:active { transform: translateY(1px) scale(.99); }
 
-/* 7) Card hover polish (projects list elsewhere still feels snappy) */
-.card:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(0,0,0,.12); transition: transform .15s ease, box-shadow .15s ease; }
+/* Inner content area (empty for now; add whatever you want later) */
+.box-body {
+  padding: clamp(18px, 3vw, 28px);
+  min-height: 180px;
+}
 </style>
 
 <div class="container home-hero">
@@ -88,33 +88,25 @@ a.stretched-link:focus-visible {
 
   <p class="subtitle">
     currently at <a href="https://www.leveltenenergy.com">LevelTen Energy</a>. previously:
-    <a href="https://data.world">data.world</a>, <a href="https://www.mcmaster.com">McMaster-Carr</a>.
+    <a href="https://data.world">data.world</a>, <a href="https://www.mcmaster.com">McMaster–Carr</a>.
   </p>
-
-  <section class="panel">
-    <h3>some things i especially like</h3>
-
-    <div class="chips">
-      <span class="chip">technical spaces</span>
-      <span class="chip">flexbox</span>
-      <span class="chip">inspect tools</span>
-      <span class="chip">inclusive design</span>
-      <span class="chip">sociological framing</span>
-      <span class="chip">non-traditional interfaces</span>
-      <span class="chip">systems design</span>
-      <span class="chip">my cats ^-^</span>
-    </div>
-
-    <!-- Cats (sleep → awake on hover) -->
-    <div class="cats">
-      <a class="cat" href="#" aria-label="grey cat">
-        <img class="cat-sleep" src="/assets/img/cats/grey-sleep.png" alt="">
-        <img class="cat-awake" src="/assets/img/cats/grey-awake.png" alt="">
-      </a>
-      <a class="cat" href="#" aria-label="white cat">
-        <img class="cat-sleep" src="/assets/img/cats/white-sleep.png" alt="">
-        <img class="cat-awake" src="/assets/img/cats/white-awake.png" alt="">
-      </a>
-    </div>
-  </section>
 </div>
+
+<section class="container content-box">
+  <!-- Cats perched on the top edge -->
+  <div class="cats-perch">
+    <!-- Grey cat -->
+    <span class="cat" aria-hidden="true">
+      <img class="sleep" src="/assets/img/cats/grey-sleep.png" alt="">
+      <img class="awake" src="/assets/img/cats/grey-awake.png" alt="">
+    </span>
+    <!-- White cat -->
+    <span class="cat" aria-hidden="true">
+      <img class="sleep" src="/assets/img/cats/white-sleep.png" alt="">
+      <img class="awake" src="/assets/img/cats/white-awake.png" alt="">
+    </span>
+  </div>
+
+  <!-- Your content lives here (left empty by request) -->
+  <div class="box-body"></div>
+</section>
