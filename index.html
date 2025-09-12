@@ -4,18 +4,18 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
+  <title>hanna gratch</title>
+
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Akaya+Telivigala&family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet"/>
 
-  <!-- Preload to stop first-hover flicker -->
+  <!-- Preload (prevents first-hover swap flicker) -->
   <link rel="preload" as="image" href="tobi-asleep.png">
   <link rel="preload" as="image" href="tobi-awake.png">
   <link rel="preload" as="image" href="kono-chillin.png">
   <link rel="preload" as="image" href="kono-happy.png">
-
-  <title>hanna gratch</title>
 
   <style>
     :root{
@@ -44,23 +44,20 @@
       -moz-osx-font-smoothing:grayscale;
     }
 
-    /* === Layout: center the entire content block on the page === */
+    /* Center the whole content block in the viewport */
     .page{
-      min-height:100svh;               /* viewport fit */
-      display:flex;
-      justify-content:center;          /* center the block horizontally */
-      align-items:flex-start;          /* start near top */
-      padding:32px 0 48px;             /* breathable but not scrolly */
+      min-height:100dvh;
+      display:grid;
+      place-items:start center; /* centered container; keep content left-aligned */
+      padding:32px 0 48px;
       box-sizing:border-box;
     }
 
-    /* The centered block */
     .wrap{
-      width:min(1100px, calc(100% - 64px));  /* centered max-width */
-      margin:0 auto;                         /* <-- key: center the block */
+      width:min(1100px, calc(100% - 64px));
+      margin:0 auto;           /* bulletproof centering fallback */
       display:flex;
       flex-direction:column;
-      align-items:flex-start;                /* content INSIDE is left-aligned */
       gap:16px;
     }
 
@@ -71,15 +68,14 @@
       padding:.35rem .75rem;
     }
 
-    /* Header (bigger) */
     h1{
       font-family:"Akaya Telivigala", system-ui;
       font-weight:400;
-      font-size:2.6em;         /* larger */
+      font-size:2.6em;
       line-height:1.12;
       color:var(--green);
       margin:8px 0 6px;
-      max-width:56rem;         /* controls line breaks (matches your mock) */
+      max-width:56rem;  /* controls line breaks */
       text-align:left;
     }
 
@@ -91,56 +87,58 @@
     .lead a{ color:var(--accent); text-decoration:none; }
     .lead a:hover{ color:var(--accent-2); }
 
-    /* Interests frame (simple single border) */
+    /* Feature frame */
     .feature{
       position:relative;
       width:100%;
       border:2px solid #000;
       border-radius:22px;
-      padding:34px 28px 36px;
+      padding:42px 28px 36px; /* top padding gives header + pills breathing room */
       background:#fff;
-      overflow:visible;        /* cats sit on the top edge */
+      overflow:visible;
     }
     .feature h2{
       font-size:1rem; text-align:center; margin:0 0 20px; color:var(--sub);
     }
 
-    /* Cats: higher + closer, perched on top-right of the box */
+    /* Cats: sit on top border, aligned as a pair on the right */
     .cats{
       position:absolute;
-      top:-42px;               /* ↑ move UP to kiss the border */
-      right:14px;              /* tuck right */
+      top:0;
+      right:16px;
+      transform:translateY(-50%); /* perch on the border */
       display:flex;
-      gap:2px;                 /* closer together */
+      align-items:flex-end;
+      gap:4px;                    /* visual closeness */
       z-index:10;
-      pointer-events:auto;
     }
-    /* hide the border under the cats so they look seated on it */
-    .cats::after{
-      content:""; position:absolute; left:2px; right:2px; bottom:-2px; height:6px;
-      background:#fff; z-index:-1; pointer-events:none;
+    /* mask the border below the cats to make them look seated */
+    .cats::before{
+      content:"";
+      position:absolute;
+      left:-8px; right:-8px; top:50%;
+      height:8px; transform:translateY(-50%);
+      background:#fff;
+      z-index:-1;
+      border-radius:999px;
     }
 
     .cat{
-      --w:168px; --h:90px;     /* size on the frame */
-      --y-offset:0px;          /* fix PNG bottom whitespace per image */
-      width:var(--w); height:var(--h);
-      position:relative; z-index:11;
+      position:relative;
+      width:160px; height:88px;   /* shared visual size */
+      --y: 0px;                   /* per-image vertical nudge */
     }
     .cat button{
       width:100%; height:100%;
       border:0; background:transparent; cursor:pointer;
       appearance:none; -webkit-appearance:none;
-      background-repeat:no-repeat; background-size:contain;
-      background-position:center calc(100% + var(--y-offset));
-      transition:background-image 0s, opacity .2s ease;
+      background-repeat:no-repeat;
+      background-size:contain;
+      background-position:center calc(100% + var(--y)); /* fight PNG whitespace */
       outline:none; box-shadow:none; -webkit-tap-highlight-color:transparent;
     }
-    .cat button:hover{ outline:none; box-shadow:none; }
-    .cat button:focus{ outline:none; }
-    .cat button:focus-visible{ box-shadow:0 0 0 2px var(--accent-2); border-radius:12px; }
 
-    /* Hover swaps */
+    /* State swaps */
     .cat--grey button{ background-image:var(--cat-grey-sleep); }
     .cat--grey button:hover,
     .cat--grey button:focus-visible{ background-image:var(--cat-grey-awake); }
@@ -149,42 +147,63 @@
     .cat--white button:hover,
     .cat--white button:focus-visible{ background-image:var(--cat-white-ears); }
 
-    /* Pills (non-clipped, wrap allowed) */
+    /* Pills */
     .chips{ display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
     .chip{
       background:#1f1f1f; color:#fff; font-size:.9rem;
       padding:.35rem .65rem; border-radius:999px; white-space:nowrap;
     }
 
-    /* Emoji overlays */
-    .scribble,.heart,.thought{ pointer-events:none; position:absolute; z-index:12; }
-    .scribble{ top:-12px; right:2px; font-size:26px; line-height:1; opacity:0; transform-origin:bottom left; }
-    .scribble.show{ animation:popFade .5s ease forwards; }
-
-    .heart{ left:50%; top:22%; transform:translateX(-50%); font-size:22px; line-height:1; opacity:0; }
-    .heart.float{ animation:floatUp 820ms ease-out forwards; }
-
-    .thought{
-      left:18%; top:-14px; background:#2f2f2f; color:#fff; font-size:.9rem;
-      padding:6px 10px 7px; border-radius:12px; opacity:0; transform:translateY(6px) scale(.98); white-space:nowrap;
-    }
-    .thought::after{ content:""; position:absolute; left:12px; bottom:-6px; width:10px; height:10px; background:#2f2f2f; transform:rotate(45deg); border-radius:2px; }
-    .thought.show{ animation:riseIn .22s ease-out forwards, hold 2.0s linear .22s forwards, fadeOut .28s ease 2.22s forwards; }
-
     .footer{ color:var(--sub); font-size:.9rem; margin-top:10px; }
 
-    /* Animations */
-    @keyframes floatUp{
+    /* Click-spawned emoji for Tobi */
+    .boom{
+      position:absolute;
+      font-size:24px;
+      line-height:1;
+      pointer-events:none;
+      transform:translate(-50%,-50%) scale(.85);
+      animation:pop-fade .7s ease-out forwards;
+      filter:drop-shadow(0 1px 0 rgba(0,0,0,.12));
+    }
+    @keyframes pop-fade{
+      0%{ opacity:0; transform:translate(-50%,-50%) scale(.6) rotate(-8deg); }
+      20%{ opacity:1; transform:translate(-50%,-58%) scale(1.05) rotate(2deg); }
+      100%{ opacity:0; transform:translate(-50%,-90%) scale(1) rotate(0); }
+    }
+
+    /* Floating heart for Kono */
+    .heart{
+      position:absolute; left:50%; top:28%;
+      transform:translateX(-50%);
+      font-size:22px; line-height:1; opacity:0; pointer-events:none;
+    }
+    .heart.float{ animation:heart-up .85s ease-out forwards; }
+    @keyframes heart-up{
       0%{ transform:translate(-50%,0) scale(.9); opacity:0; }
       15%{ opacity:1; }
-      70%{ transform:translate(-50%,-28px) scale(1.1); }
-      100%{ transform:translate(-50%,-40px) scale(1); opacity:0; }
+      70%{ transform:translate(-50%,-28px) scale(1.08); }
+      100%{ transform:translate(-50%,-44px) scale(1); opacity:0; }
     }
-    @keyframes popFade{
-      0%{ transform:scale(.8) rotate(-6deg); opacity:0; }
-      40%{ transform:scale(1.05) rotate(2deg); opacity:1; }
-      100%{ transform:scale(1) rotate(0); opacity:0; }
+
+    /* Kono's occasional thought bubble */
+    .thought{
+      position:absolute;
+      left:20%;
+      top:-14px;
+      background:#2f2f2f; color:#fff;
+      font-size:.9rem; line-height:1;
+      padding:6px 10px 7px;
+      border-radius:12px;
+      opacity:0; transform:translateY(6px) scale(.98);
+      pointer-events:none; white-space:nowrap; z-index:12;
     }
+    .thought::after{
+      content:""; position:absolute; left:12px; bottom:-6px;
+      width:10px; height:10px; background:#2f2f2f;
+      transform:rotate(45deg); border-radius:2px;
+    }
+    .thought.show{ animation:riseIn .22s ease-out forwards, hold 2s linear .22s forwards, fadeOut .28s ease 2.22s forwards; }
     @keyframes riseIn{ to{ opacity:1; transform:translateY(0) scale(1);} }
     @keyframes hold{ to{ opacity:1; } }
     @keyframes fadeOut{ to{ opacity:0; } }
@@ -192,17 +211,16 @@
     /* Small screens */
     @media (max-width:780px){
       h1{ font-size:2.2em; max-width:42rem; }
-      .cat{ --w:140px; --h:74px; }
-      .cats{ top:-38px; right:10px; gap:2px; }
+      .cat{ width:138px; height:76px; }
+      .cats{ right:10px; gap:2px; }
     }
 
-    /* Hidden background to warm up hover images (extra precaution) */
+    /* Hidden warm-up to keep hover swaps instant */
     .preload{ position:absolute; left:-9999px; width:0; height:0; overflow:hidden;
       background-image: var(--cat-grey-awake), var(--cat-white-ears);
     }
   </style>
 </head>
-
 <body>
   <div class="preload" aria-hidden="true"></div>
 
@@ -221,13 +239,16 @@
       <section class="feature">
         <!-- Cats perched on the frame -->
         <div class="cats" aria-hidden="true">
-          <div class="cat cat--grey">
-            <button aria-label="grey cat — hover to wake, click to annoy" style="--y-offset: 8px;"></button>
-            <div class="scribble">⁉️</div>
+          <!-- Tobi (grey) -->
+          <div class="cat cat--grey" style="--y:8px">
+            <button aria-label="grey cat — hover to wake, click to grumble"></button>
           </div>
-          <div class="cat cat--white">
-            <button aria-label="white cat — hover to perk ears, click for heart" style="--y-offset: 10px;"></button>
-            <div class="heart">❤️</div>
+
+          <!-- Kono (white) -->
+          <div class="cat cat--white" style="--y:10px">
+            <button aria-label="white cat — hover to perk ears, click for heart"></button>
+            <div class="heart" aria-hidden="true">❤️</div>
+            <div class="thought" aria-hidden="true"></div>
           </div>
         </div>
 
@@ -251,45 +272,57 @@
   <script>
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // White cat (Kono)
-    const whiteCat = document.querySelector('.cat--white');
-    const whiteBtn = whiteCat.querySelector('button');
-    const heart = whiteCat.querySelector('.heart');
-    const thought = whiteCat.querySelector('.thought');
-
+    // Kono (white): float a heart on click
+    const white = document.querySelector('.cat--white');
+    const whiteBtn = white.querySelector('button');
+    const heart = white.querySelector('.heart');
     whiteBtn.addEventListener('click', () => {
       heart.classList.remove('float');
+      // small horizontal jitter so repeats feel alive
       heart.style.left = (45 + Math.random()*10) + '%';
       void heart.offsetWidth;
       heart.classList.add('float');
     });
 
+    // Tobi (grey): spawn a ⁉️ exactly where the user clicks
+    const grey = document.querySelector('.cat--grey');
+    const greyBtn = grey.querySelector('button');
+
+    greyBtn.addEventListener('click', (e) => {
+      const box = greyBtn.getBoundingClientRect();
+      const x = e.clientX - box.left;
+      const y = e.clientY - box.top;
+
+      const span = document.createElement('span');
+      span.className = 'boom';
+      span.textContent = '⁉️';
+      span.style.left = x + 'px';
+      span.style.top  = y + 'px';
+      greyBtn.parentElement.appendChild(span);
+      span.addEventListener('animationend', () => span.remove(), {once:true});
+    });
+
+    // Kono: occasional thought bubble with random foods (no interaction needed)
+    const thought = white.querySelector('.thought');
+    const foods = ['🍣','🐟','🍗','🥟','🧀','🍤','🍜'];
+
     function scheduleThought(){
-      const delay = 8000 + Math.random()*8000;
+      const delay = 8000 + Math.random()*8000; // 8–16s
       setTimeout(() => {
+        if (!thought) return;
         if (!reduceMotion) {
-          const foods = ['🍣','🐟','🍗','🥟','🧀','🍤','🍜'];
           thought.textContent = foods[Math.floor(Math.random()*foods.length)] + ' …dreaming…';
+        } else {
+          thought.textContent = '…';
         }
         thought.classList.add('show');
         setTimeout(() => {
           thought.classList.remove('show');
-          scheduleThought();
+          scheduleThought(); // loop
         }, 2500);
       }, delay);
     }
     scheduleThought();
-
-    // Grey cat (Tobi)
-    const greyCat = document.querySelector('.cat--grey');
-    const greyBtn = greyCat.querySelector('button');
-    const scribble = greyCat.querySelector('.scribble');
-
-    greyBtn.addEventListener('click', () => {
-      scribble.classList.remove('show');
-      void scribble.offsetWidth;
-      scribble.classList.add('show');
-    });
   </script>
 </body>
 </html>
