@@ -140,4 +140,178 @@
     .cat--white button:focus-visible{ background-image:var(--cat-white-ears); }
 
     /* Pills */
-    .chips{ display:flex; flex-wrap:wrap; gap:10px; justify-content:c
+    .chips{ display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
+    .chip{
+      background:#1f1f1f; color:#fff; font-size:.9rem;
+      padding:.35rem .65rem; border-radius:999px; white-space:nowrap;
+    }
+
+    .footer{ color:var(--sub); font-size:.9rem; margin-top:10px; }
+
+    /* Tobi click pop (spawns at click point) */
+    .boom{
+      position:absolute; font-size:24px; line-height:1; pointer-events:none;
+      transform:translate(-50%,-50%) scale(.85);
+      animation:pop-fade .7s ease-out forwards;
+      filter:drop-shadow(0 1px 0 rgba(0,0,0,.12));
+    }
+    @keyframes pop-fade{
+      0%{ opacity:0; transform:translate(-50%,-50%) scale(.6) rotate(-8deg); }
+      20%{ opacity:1; transform:translate(-50%,-58%) scale(1.05) rotate(2deg); }
+      100%{ opacity:0; transform:translate(-50%,-90%) scale(1) rotate(0); }
+    }
+
+    /* Kono heart & thought bubble */
+    .heart{
+      position:absolute; left:50%; top:30%;
+      transform:translateX(-50%);
+      font-size:24px; line-height:1; opacity:0; pointer-events:none;
+    }
+    .heart.float{ animation:heart-up .85s ease-out forwards; }
+    @keyframes heart-up{
+      0%{ transform:translate(-50%,0) scale(.9); opacity:0; }
+      15%{ opacity:1; }
+      70%{ transform:translate(-50%,-28px) scale(1.08); }
+      100%{ transform:translate(-50%,-44px) scale(1); opacity:0; }
+    }
+
+    .thought{
+      position:absolute;
+      left:22%; top:-18px;
+      background:#2f2f2f; color:#fff;
+      font-size:.95rem; line-height:1;
+      padding:6px 10px 7px;
+      border-radius:12px;
+      opacity:0; transform:translateY(6px) scale(.98);
+      pointer-events:none; white-space:nowrap; z-index:12;
+    }
+    .thought::after{
+      content:""; position:absolute; left:12px; bottom:-6px;
+      width:10px; height:10px; background:#2f2f2f;
+      transform:rotate(45deg); border-radius:2px;
+    }
+    .thought.show{ animation:riseIn .22s ease-out forwards, hold 2s linear .22s forwards, fadeOut .28s ease 2.22s forwards; }
+    @keyframes riseIn{ to{ opacity:1; transform:translateY(0) scale(1);} }
+    @keyframes hold{ to{ opacity:1; } }
+    @keyframes fadeOut{ to{ opacity:0; } }
+
+    /* Small screens */
+    @media (max-width:780px){
+      h1{ font-size:2.2em; max-width:42rem; }
+      :root{
+        --catW: 158px;
+        --catH: 90px;
+        --catOverlap: -14px;
+      }
+      .cats{ right:10px; }
+      .feature{ padding-top:58px; margin-top: clamp(40px, 12vw, 96px); }
+      .heart{ font-size:22px; top:30%; }
+      .thought{ left:24%; top:-16px; font-size:.9rem; }
+    }
+
+    /* Warm-up the hover sprites */
+    .preload{ position:absolute; left:-9999px; width:0; height:0; overflow:hidden;
+      background-image: var(--cat-grey-awake), var(--cat-white-ears);
+    }
+  </style>
+</head>
+<body>
+  <div class="preload" aria-hidden="true"></div>
+
+  <div class="page">
+    <main class="wrap">
+      <div class="badge">𐚁₊⊹ howdy, i’m hanna!</div>
+
+      <h1>austin-based designer uncovering intuitive + enjoyable experiences in complex systems.</h1>
+
+      <p class="lead">
+        currently at <a href="https://www.leveltenenergy.com/" target="_blank" rel="noopener">LevelTen Energy</a>.
+        previously: <a href="https://data.world/home/" target="_blank" rel="noopener">data.world</a>,
+        <a href="https://www.mcmaster.com/" target="_blank" rel="noopener">McMaster-Carr</a>.
+      </p>
+
+      <section class="feature">
+        <!-- Cats perched on the frame -->
+        <div class="cats" aria-hidden="true">
+          <!-- Tobi (grey): adjust x/y to cancel PNG padding -->
+          <div class="cat cat--grey" style="--x:6px; --y:10px">
+            <button aria-label="grey cat — hover to wake, click to grumble"></button>
+          </div>
+
+          <!-- Kono (white): slight opposite nudge; sits closer to Tobi -->
+          <div class="cat cat--white" style="--x:-4px; --y:12px">
+            <button aria-label="white cat — hover to perk ears, click for heart"></button>
+            <div class="heart" aria-hidden="true">❤️</div>
+            <div class="thought" aria-hidden="true"></div>
+          </div>
+        </div>
+
+        <h2>some things I especially like</h2>
+        <div class="chips" role="list" aria-label="interests">
+          <span class="chip" role="listitem">technical spaces</span>
+          <span class="chip" role="listitem">flexbox</span>
+          <span class="chip" role="listitem">inspect tools</span>
+          <span class="chip" role="listitem">inclusive design</span>
+          <span class="chip" role="listitem">sociological framing</span>
+          <span class="chip" role="listitem">non-traditional interfaces</span>
+          <span class="chip" role="listitem">systems design</span>
+          <span class="chip" role="listitem">my cats ≽^- ˓  -^≼</span>
+        </div>
+      </section>
+
+      <p class="footer">sept. 2025</p>
+    </main>
+  </div>
+
+  <script>
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Kono (white): float a heart on click
+    const white = document.querySelector('.cat--white');
+    const whiteBtn = white.querySelector('button');
+    const heart = white.querySelector('.heart');
+    whiteBtn.addEventListener('click', () => {
+      heart.classList.remove('float');
+      heart.style.left = (45 + Math.random()*10) + '%'; // tiny jitter
+      void heart.offsetWidth;
+      heart.classList.add('float');
+    });
+
+    // Tobi (grey): spawn a ⁉️ exactly where user clicks
+    const grey = document.querySelector('.cat--grey');
+    const greyBtn = grey.querySelector('button');
+    greyBtn.addEventListener('click', (e) => {
+      const box = greyBtn.getBoundingClientRect();
+      const x = e.clientX - box.left;
+      const y = e.clientY - box.top;
+      const span = document.createElement('span');
+      span.className = 'boom';
+      span.textContent = '⁉️';
+      span.style.left = x + 'px';
+      span.style.top  = y + 'px';
+      greyBtn.parentElement.appendChild(span);
+      span.addEventListener('animationend', () => span.remove(), {once:true});
+    });
+
+    // Kono: occasional thought bubble (no interaction)
+    const thought = white.querySelector('.thought');
+    const foods = ['🍣','🐟','🍗','🥟','🧀','🍤','🍜'];
+
+    function scheduleThought(){
+      const delay = 8000 + Math.random()*8000; // 8–16s
+      setTimeout(() => {
+        if (!thought) return;
+        thought.textContent = reduceMotion
+          ? '…'
+          : foods[Math.floor(Math.random()*foods.length)] + ' …dreaming…';
+        thought.classList.add('show');
+        setTimeout(() => {
+          thought.classList.remove('show');
+          scheduleThought(); // loop
+        }, 2500);
+      }, delay);
+    }
+    scheduleThought();
+  </script>
+</body>
+</html>
