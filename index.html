@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Akaya+Telivigala&family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet"/>
 
-  <!-- Preload images to prevent first-hover flash -->
+  <!-- Preload cat images to prevent first-hover flash -->
   <link rel="preload" as="image" href="tobi-asleep.png">
   <link rel="preload" as="image" href="tobi-awake.png">
   <link rel="preload" as="image" href="kono-chillin.png">
@@ -31,6 +31,7 @@
       --cat-white-ears:  url('kono-happy.png');
     }
 
+    /* Full-bleed background */
     html,body{height:100%}
     body{
       margin:0;
@@ -42,16 +43,28 @@
         #fff;
       -webkit-font-smoothing:antialiased;
       -moz-osx-font-smoothing:grayscale;
+
+      /* You asked for a single-screen hero with no extra scroll */
+      overflow-y:hidden; /* prevents seeing random gradient below */
+      overflow-x:hidden;
     }
 
-    /* Center all content – column with centered items */
+    /* Center the page content inside the viewport */
+    .shell{
+      min-height:100vh;
+      display:grid;
+      place-items:start center;   /* horizontally centered, content starts near top */
+      padding:24px 0 16px;        /* small breathing room, still no scroll */
+      box-sizing:border-box;
+    }
+
+    /* Main column */
     .wrap{
-      max-width:1100px;
-      margin:48px auto 80px;
-      padding:0 24px;
+      width:min(1100px, calc(100% - 48px));
       display:flex;
       flex-direction:column;
-      align-items:center;
+      align-items:center;         /* keep the block centered */
+      gap:18px;
     }
 
     .badge{
@@ -61,61 +74,60 @@
       padding:.35rem .75rem;
     }
 
-    /* Header sized to 2em and allowed to soft-wrap like your mock */
+    /* Header — larger, controlled wrap */
     h1{
       font-family:"Akaya Telivigala", system-ui;
       font-weight:400;
-      font-size:2em;        /* requested size */
-      line-height:1.15;
+      font-size:2.6em;          /* larger header */
+      line-height:1.12;
       color:var(--green);
-      margin:18px 0 10px;
-      max-width:56rem;      /* controls where lines break */
+      margin:6px 0 4px;
+      max-width:56rem;          /* adjust to tune line breaks */
       text-align:left;
     }
 
     .lead{
       font-size:1.05rem; color:var(--sub);
-      margin:0 0 36px; text-align:left; width:100%; max-width:56rem;
+      margin:0 0 6px; text-align:left;
+      width:100%; max-width:56rem;
     }
     .lead a{ color:var(--accent); text-decoration:none; }
     .lead a:hover{ color:var(--accent-2); }
 
-    /* Interests frame (single border) */
+    /* Interests frame — single border, centered */
     .feature{
       position:relative;
-      width:100%;
-      max-width:1000px;
-      margin-top:8px;      /* alignment like screenshot */
+      width:min(1000px, 100%);
       border:2px solid #000;
       border-radius:22px;
       padding:34px 28px 36px;
       background:#fff;
-      overflow:visible;    /* cats sit on top edge */
+      overflow:visible;          /* cats sit on top edge */
     }
     .feature h2{
       font-size:1rem; text-align:center; margin:0 0 20px; color:var(--sub);
     }
 
-    /* Cats on the top-right; close together */
+    /* Cats perched on the top-right; closer and higher */
     .cats{
       position:absolute;
-      top:-30px;
-      right:20px;
+      top:-38px;                 /* move UP to align with border */
+      right:16px;                /* tuck a bit right */
       display:flex;
-      gap:6px;              /* bring them closer */
+      gap:4px;                   /* closer together */
       z-index:10;
       pointer-events:auto;
     }
-    /* Hide the border line just under the cats so they look seated on it */
+    /* Hide the frame line right under the cats */
     .cats::after{
       content:"";
-      position:absolute; left:6px; right:6px; bottom:-2px;
+      position:absolute; left:4px; right:4px; bottom:-2px;
       height:6px; background:#fff; z-index:-1; pointer-events:none;
     }
 
     .cat{
-      --w:170px; --h:90px;
-      --y-offset:0px;        /* per-image baseline fix for PNG bottom whitespace */
+      --w:168px; --h:90px;      /* size on the frame */
+      --y-offset:0px;           /* per-image baseline fix for PNG bottom whitespace */
       width:var(--w); height:var(--h);
       position:relative; z-index:11;
     }
@@ -132,7 +144,7 @@
     .cat button:focus{ outline:none; }
     .cat button:focus-visible{ box-shadow:0 0 0 2px var(--accent-2); border-radius:12px; }
 
-    /* Swap states */
+    /* Hover swaps */
     .cat--grey button{ background-image:var(--cat-grey-sleep); }
     .cat--grey button:hover,
     .cat--grey button:focus-visible{ background-image:var(--cat-grey-awake); }
@@ -140,6 +152,13 @@
     .cat--white button{ background-image:var(--cat-white-sleep); }
     .cat--white button:hover,
     .cat--white button:focus-visible{ background-image:var(--cat-white-ears); }
+
+    /* Pills – earlier style (not clipped) */
+    .chips{ display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
+    .chip{
+      background:#1f1f1f; color:#fff; font-size:.9rem;
+      padding:.35rem .65rem; border-radius:999px; white-space:nowrap;
+    }
 
     /* Emoji overlays */
     .scribble,.heart,.thought{ pointer-events:none; position:absolute; z-index:12; }
@@ -163,16 +182,10 @@
     .thought::after{ content:""; position:absolute; left:12px; bottom:-6px; width:10px; height:10px; background:#2f2f2f; transform:rotate(45deg); border-radius:2px; }
     .thought.show{ animation:riseIn .22s ease-out forwards, hold 2.0s linear .22s forwards, fadeOut .28s ease 2.22s forwards; }
 
-    /* Pills – use the earlier, non-clipped ones (wrap allowed, centered) */
-    .chips{
-      display:flex; flex-wrap:wrap; gap:10px; justify-content:center;
-    }
-    .chip{
-      background:#1f1f1f; color:#fff; font-size:.9rem;
-      padding:.35rem .65rem; border-radius:999px; white-space:nowrap;
-    }
+    /* Footer line */
+    .footer{ color:var(--sub); font-size:.9rem; }
 
-    /* subtle animations */
+    /* Animations */
     @keyframes floatUp{
       0%{ transform:translate(-50%,0) scale(.9); opacity:0; }
       15%{ opacity:1; }
@@ -188,13 +201,14 @@
     @keyframes hold{ to{ opacity:1; } }
     @keyframes fadeOut{ to{ opacity:0; } }
 
-    @media (max-width:700px){
-      h1{ max-width:42rem; }
+    /* Small screens: keep everything centered without scroll */
+    @media (max-width:780px){
+      h1{ font-size:2.2em; max-width:42rem; }
       .cat{ --w:140px; --h:74px; }
-      .scribble{ font-size:22px; top:-10px; right:2px; }
+      .cats{ top:-34px; right:12px; gap:4px; }
     }
 
-    /* Extra-preload: hidden element with both hover images as backgrounds */
+    /* Extra-preload of hover images via hidden background */
     .preload{ position:absolute; left:-9999px; width:0; height:0; overflow:hidden;
       background-image: var(--cat-grey-awake), var(--cat-white-ears);
     }
@@ -204,45 +218,47 @@
 <body>
   <div class="preload" aria-hidden="true"></div>
 
-  <main class="wrap">
-    <div class="badge">☁️ howdy, i’m hanna!</div>
+  <div class="shell">
+    <main class="wrap">
+      <div class="badge">☁️ howdy, i’m hanna!</div>
 
-    <h1>austin-based designer uncovering intuitive + enjoyable experiences in complex systems.</h1>
+      <h1>austin-based designer uncovering intuitive + enjoyable experiences in complex systems.</h1>
 
-    <p class="lead">
-      currently at <a href="https://www.leveltenenergy.com/" target="_blank" rel="noopener">LevelTen Energy</a>.
-      previously: <a href="https://data.world/home/" target="_blank" rel="noopener">data.world</a>,
-      <a href="https://www.mcmaster.com/" target="_blank" rel="noopener">McMaster-Carr</a>.
-    </p>
+      <p class="lead">
+        currently at <a href="https://www.leveltenenergy.com/" target="_blank" rel="noopener">LevelTen Energy</a>.
+        previously: <a href="https://data.world/home/" target="_blank" rel="noopener">data.world</a>,
+        <a href="https://www.mcmaster.com/" target="_blank" rel="noopener">McMaster-Carr</a>.
+      </p>
 
-    <section class="feature">
-      <!-- Cats on the frame (top-right), close together -->
-      <div class="cats" aria-hidden="true">
-        <div class="cat cat--grey">
-          <button aria-label="grey cat — hover to wake, click to annoy" style="--y-offset: 8px;"></button>
-          <div class="scribble">⁉️</div>
+      <section class="feature">
+        <!-- Cats on the frame (top-right), closer + higher -->
+        <div class="cats" aria-hidden="true">
+          <div class="cat cat--grey">
+            <button aria-label="grey cat — hover to wake, click to annoy" style="--y-offset: 8px;"></button>
+            <div class="scribble">⁉️</div>
+          </div>
+          <div class="cat cat--white">
+            <button aria-label="white cat — hover to perk ears, click for heart" style="--y-offset: 10px;"></button>
+            <div class="heart">❤️</div>
+          </div>
         </div>
-        <div class="cat cat--white">
-          <button aria-label="white cat — hover to perk ears, click for heart" style="--y-offset: 10px;"></button>
-          <div class="heart">❤️</div>
+
+        <h2>some things I especially like</h2>
+        <div class="chips" role="list" aria-label="interests">
+          <span class="chip" role="listitem">technical spaces</span>
+          <span class="chip" role="listitem">flexbox</span>
+          <span class="chip" role="listitem">inspect tools</span>
+          <span class="chip" role="listitem">inclusive design</span>
+          <span class="chip" role="listitem">sociological framing</span>
+          <span class="chip" role="listitem">non-traditional interfaces</span>
+          <span class="chip" role="listitem">systems design</span>
+          <span class="chip" role="listitem">my cats ≽^- ˓  -^≼</span>
         </div>
-      </div>
+      </section>
 
-      <h2>some things I especially like</h2>
-      <div class="chips" role="list" aria-label="interests">
-        <span class="chip" role="listitem">technical spaces</span>
-        <span class="chip" role="listitem">flexbox</span>
-        <span class="chip" role="listitem">inspect tools</span>
-        <span class="chip" role="listitem">inclusive design</span>
-        <span class="chip" role="listitem">sociological framing</span>
-        <span class="chip" role="listitem">non-traditional interfaces</span>
-        <span class="chip" role="listitem">systems design</span>
-        <span class="chip" role="listitem">my cats ≽^- ˓  -^≼</span>
-      </div>
-    </section>
-
-    <p style="margin-top:28px; color:var(--sub); font-size:.9rem;">made with care • dec 2024</p>
-  </main>
+      <p class="footer">made with care · dec 2024</p>
+    </main>
+  </div>
 
   <script>
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
