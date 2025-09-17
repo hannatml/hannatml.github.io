@@ -8,106 +8,143 @@
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Akaya+Telivigala&family=Sen:wght@400..800&family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Akaya+Telivigala&family=Sen:wght@400..800&family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet"/>
 
-  <!-- Preload images! -->
+  <!-- Preload images -->
   <link rel="preload" as="image" href="tobi-asleep.png">
   <link rel="preload" as="image" href="tobi-awake.png">
   <link rel="preload" as="image" href="kono-chillin.png">
   <link rel="preload" as="image" href="kono-happy.png">
 
-<style>
-/* ====== Design tokens ====== */
-:root{
-  --ink:#1a1a1a; --sub:#4b4b4b;
-  --green:#3a4a18; --accent:#446124; --accent-2:#87b35c;
+  <style>
+  /* ====== Design tokens ====== */
+  :root{
+    --ink:#1a1a1a; --sub:#4b4b4b;
+    --green:#3a4a18; --accent:#446124; --accent-2:#87b35c;
 
-  /* cats */
-  --cat-grey-sleep:url('tobi-asleep.png');
-  --cat-grey-awake:url('tobi-awake.png');
-  --cat-white-sleep:url('kono-chillin.png');
-  --cat-white-ears:url('kono-happy.png');
+    /* cats */
+    --cat-grey-sleep:url('tobi-asleep.png');
+    --cat-grey-awake:url('tobi-awake.png');
+    --cat-white-sleep:url('kono-chillin.png');
+    --cat-white-ears:url('kono-happy.png');
 
-  /* sizes */
-  --catW: 228px; --catH: 128px; --overlap: 72px; --perchPad: 38px; --catLift: 20px;
+    /* sizes */
+    --catW: 228px; --catH: 128px; --overlap: 72px; --perchPad: 38px; --catLift: 20px;
 
-  /* mobile banner height (overridden on mobile) */
-  --mb-h: 0px;
-}
+    /* height of fixed mobile banner (overridden in mobile MQ) */
+    --mb-h: 0px;
+  }
 
-/* ====== Global reset-ish ====== */
-*, *::before, *::after { box-sizing: border-box; }
-html { min-height: 100%; }
-body{
-  margin: 0;
-  min-height: 100%;
-  font-family: "sen", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-  color: var(--ink);
-  background:
-    radial-gradient(circle at 0% 50%, rgb(191, 251, 230) 0%, transparent 30%), radial-gradient(circle at 80% 10%, rgb(173, 238, 171) 0%, transparent 25%),
-    radial-gradient(circle at 90% 70%, rgba(141, 252, 217, 0.321) 0%, transparent 30%),
-    linear-gradient(45deg, #fcfffa, #e1f9d0);
-  background-repeat: no-repeat;
-}
+  /* ====== Global reset-ish ====== */
+  *, *::before, *::after { box-sizing: border-box; }
+  html { min-height: 100%; scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce){ html{ scroll-behavior: auto; } }
 
-/* ====== Container ====== */
-.wrap{
-  max-width: 1280px;
-  margin-inline: auto;
-  padding-inline: clamp(16px, 4vw, 32px);
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 16px;
-  isolation: isolate;
-}
+  /* Page must not pan sideways; only inner scrollers can.
+     Use hidden (widely supported) + ensure children don’t exceed width. */
+  html, body{ overflow-x: hidden; touch-action: pan-y; }
 
-/* ====== Hero (.header-content) ====== */
-.header-content{
-  display: grid;
-  align-content: center;
-  justify-items: start;
-  gap: clamp(12px, 2vh, 24px);
-  block-size: calc(100svh - var(--mb-h));
-  padding-block: clamp(16px, 6vh, 64px);
-  padding-inline: 0;
-  margin: 0;
-}
+  body{
+    margin: 0;
+    min-height: 100%;
+    font-family: "Sen", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    color: var(--ink);
+    background:
+      radial-gradient(circle at 0% 50%, rgb(191, 251, 230) 0%, transparent 30%),
+      radial-gradient(circle at 80% 10%, rgb(173, 238, 171) 0%, transparent 25%),
+      radial-gradient(circle at 90% 70%, rgba(141, 252, 217, 0.32) 0%, transparent 30%),
+      linear-gradient(45deg, #fcfffa, #e1f9d0);
+    background-repeat: no-repeat;
+    -webkit-text-size-adjust: 100%;
+  }
 
-/* Howdy pill */
-.badge{
-  display: inline-flex; align-items: center; gap: .5ch;
-  width: max-content;
+  /* kill iOS tap highlight globally; keep keyboard focus via :focus-visible */
+  *{ -webkit-tap-highlight-color: transparent; }
+  a, button{
+    background-color: transparent;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none; -webkit-user-select: none;
+  }
+  button:active, a:active { background-color: transparent; }
+  button:focus { outline: none; }
+
+  img, svg, video{ max-width: 100%; height: auto; }
+
+  /* ====== Container ====== */
+  .wrap{
+    max-width: 1280px;
+    margin-inline: auto;
+    padding-inline: clamp(16px, 4vw, 32px);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+    isolation: isolate;
+    max-width: min(1280px, 100vw); /* never exceed viewport */
+  }
+
+  /* ====== Hero (.header-content) ====== */
+  .header-content{
+    display: grid;
+    align-content: center;
+    justify-items: start;
+    gap: clamp(12px, 2vh, 24px);
+    min-block-size: calc(100svh - var(--mb-h)); /* grows when content needs it */
+    padding-block: clamp(16px, 6vh, 64px);
+    margin: 0;
+    max-width: 100%;
+  }
+
+  /* Howdy pill — allow wrapping on narrow screens */
+  .badge{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;   /* center the contents as a group */
+  text-align: center;        /* center each wrapped line of text */
+  gap: .5ch;
+  flex-wrap: wrap;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+
+  /* optional niceties */
+  text-wrap: balance;        /* more even line lengths (modern browsers) */
+  line-height: 1.2;
+
   font-size: .95rem; color: var(--sub);
   background: rgba(255,255,255,.5);
   border: 1px dashed #1a1a1a; border-radius: 999px;
   padding: .35rem .75rem;
 }
 
-/* Headline + lead */
-h1{
-  font-family: "Akaya Telivigala", system-ui;
-  font-weight: 400; font-size: 2.6em; line-height: 1.12;
-  color: var(--green); margin: 8px 0 6px; max-width: 56rem; text-align: left;
-}
-.lead{ font-size: 1.05rem; color: var(--sub); margin: 0; max-width: 56rem; }
-a{ color: var(--accent); text-decoration: none; }
-a:hover{ color: var(--accent-2); }
+/* if you ever have child elements (e.g., an icon + span), let text actually wrap */
+.badge > * { min-width: 0; }
 
-/* ====== Feature frame ====== */
-.feature{
-  position: relative;
-  align-self: stretch;
-  border: 3px solid #000; border-radius: 22px;
-  padding: clamp(24px, 3.5vw, 36px) clamp(18px, 3vw, 28px);
-  margin-block: max(28px, calc((var(--catH) - var(--perchPad)) + 16px)) 24px;
-  margin-inline: 0;
-  background: rgba(255,255,255,.2);
-  overflow: visible;
-}
-.feature h2{ font-size: 1rem; text-align: center; margin: 0 0 20px; color: var(--sub); }
 
-/* Cats */
+  /* Headline + lead */
+  h1{
+    font-family: "Akaya Telivigala", system-ui;
+    font-weight: 400; font-size: 2.6em; line-height: 1.12;
+    color: var(--green); margin: 8px 0 6px; max-width: 56rem; text-align: left;
+  }
+  .lead{ font-size: 1.05rem; color: var(--sub); margin: 0; max-width: 56rem; }
+  a{ color: var(--accent); text-decoration: none; }
+  a:hover{ color: var(--accent-2); }
+
+  /* ====== Feature frame ====== */
+  .feature{
+    position: relative;
+    align-self: stretch;
+    border: 3px solid #000; border-radius: 22px;
+    padding: clamp(24px, 3.5vw, 36px) clamp(18px, 3vw, 28px);
+    margin-block: max(28px, calc((var(--catH) - var(--perchPad)) + 16px)) 24px;
+    background: rgba(255,255,255,.2);
+    overflow: visible;
+    max-width: 100%;
+  }
+  .feature h2{ font-size: 1rem; text-align: center; margin: 0 0 20px; color: var(--sub); }
+
+ /* Cats */
 .cats{
   position: absolute;
   top: calc(-1 * (var(--catH) - var(--perchPad)) - var(--catLift));
@@ -115,100 +152,181 @@ a:hover{ color: var(--accent-2); }
   width: calc(var(--catW) * 2 - var(--overlap));
   height: var(--catH);
   z-index: 10;
+  pointer-events: none;                 /* container is decorative */
+  overflow: visible;                    /* let overlays spill outside */
+  max-width: calc(100% - 32px);
 }
-.cats::after{ content:""; position:absolute; left:-6px; right:-6px; bottom:-4px; height:8px; }
-.cat{ position:absolute; bottom:0; width:var(--catW); height:var(--catH); --x:0px; --y:0px; }
-.cat--grey{ left:0; }
+
+.cat{
+  position: absolute;
+  bottom: 0;
+  width: var(--catW);
+  height: var(--catH);
+  --x: 0px;
+  --y: 0px;
+
+  /* overlay tunables */
+  --overlayIntoImage: 28px;             /* heart/boom dip amount */
+  --bubbleOverlap: 26px;                /* thought dip amount  */
+  --bubbleLift: 8px;                    /* thought pop amount  */
+
+  pointer-events: auto;
+  overflow: visible;                    /* avoid clipping overlays */
+}
+
+.cat--grey{  left: 0; }
 .cat--white{ left: calc(var(--catW) - var(--overlap)); }
+
 .cat button{
-  width:100%; height:100%; border:0; background:transparent; cursor:pointer;
-  appearance:none; background-repeat:no-repeat; background-size:contain;
-  background-position: calc(50%) calc(100% + var(--y)); outline:0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  appearance: none; -webkit-appearance: none;
+
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: calc(50%) calc(100% + var(--y));
+
+  outline: 0;
+  -webkit-touch-callout: none;
+  touch-action: manipulation;
+
+  position: relative;
+  z-index: 1;                           /* image layer below overlays */
 }
-.cat--grey  button{ background-image:var(--cat-grey-sleep); }
-.cat--grey  button:hover, .cat--grey  button:focus-visible{ background-image:var(--cat-grey-awake); }
-.cat--white button{ background-image:var(--cat-white-sleep); }
-.cat--white button:hover, .cat--white button:focus-visible{ background-image:var(--cat-white-ears); }
+
+.cat--grey  button{ background-image: var(--cat-grey-sleep); }
+.cat--grey  button:hover,
+.cat--grey  button:focus-visible{ background-image: var(--cat-grey-awake); }
+
+.cat--white button{ background-image: var(--cat-white-sleep); }
+.cat--white button:hover,
+.cat--white  button:focus-visible{ background-image: var(--cat-white-ears); }
+
+/* Heart (click -> .float) */
+.cat .heart{
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% - var(--overlayIntoImage));   /* overlap into PNG */
+  transform: translate(-50%, 0) scale(.9);
+  opacity: 0;
+  pointer-events: none;
+  filter: drop-shadow(0 1px 0 rgba(0,0,0,.12));
+  z-index: 2;                                     /* above image */
+}
+.cat .heart.float{ animation: heart-float 900ms ease-out forwards; }
+
+@keyframes heart-float{
+  0%   { opacity: 0; transform: translate(-50%, -6px)  scale(.85); }
+  25%  { opacity: 1; transform: translate(-50%, -18px) scale(1.00); }
+  100% { opacity: 0; transform: translate(-50%, -46px) scale(1.15); }
+}
+
+/* Boom = clone of heart behavior */
+.cat .boom{
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% - var(--overlayIntoImage));   /* overlap into PNG */
+  transform: translate(-50%, 0) scale(.9);
+  opacity: 0;
+  pointer-events: none;
+  filter: drop-shadow(0 1px 0 rgba(0,0,0,.12));
+  z-index: 2;
+}
+.cat .boom.float{ animation: heart-float 900ms ease-out forwards; }
+
+/* Thought tooltip (auto, occasional) */
+.cat .thought{
+  position: absolute;
+  left: 66%;
+  bottom: calc(100% - var(--bubbleOverlap));      /* overlap into PNG */
+  transform: translate(-50%, 0);
+  z-index: 3;                                     /* above heart & image */
+
+  opacity: 0;
+  visibility: hidden;
+  background: #fff;
+  border: 1.5px solid #000;
+  border-radius: 12px;
+  padding: 6px 8px;
+  font-size: .85rem;
+  line-height: 1;
+  color: #111;
+  white-space: nowrap;
+  box-shadow: 0 2px 0 rgba(0,0,0,.08);
+  pointer-events: none;
+  will-change: transform, opacity;
+  transition: opacity .18s ease, transform .18s ease;
+}
+.cat .thought::after{
+  content:"";
+  position: absolute;
+  left: 16px; top: 100%;
+  width: 10px; height: 10px;
+  background: #fff;
+  border-right: 1.5px solid #000;
+  border-bottom: 1.5px solid #000;
+  transform: translateY(-6px) rotate(45deg);
+}
+.cat .thought.show{
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, calc(-1 * var(--bubbleLift)));
+}
+
+/* Optional per-cat fine-tuning (heads differ slightly) */
+.cat--grey  { --overlayIntoImage: 72px; --bubbleOverlap: 24px; }
+.cat--white { --overlayIntoImage: 32px; --bubbleOverlap: 30px; }
 
 /* Chips */
-.chips{ display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
-.chip{ background:#1f1f1f; color:#fff; font-size:.9rem; padding:.35rem .65rem; border-radius:999px; white-space:nowrap; }
-
-.footer{ color:var(--sub); font-size:.9rem; margin-top:10px; }
-
-/* Click/heart effects */
-.boom{
-  position:absolute; font-size:24px; line-height:1; pointer-events:none;
-  transform:translate(-50%,-50%) scale(.85);
-  filter:drop-shadow(0 1px 0 rgba(0,0,0,.12));
-  animation: pop-fade .7s ease-out forwards;
-}
-@keyframes pop-fade{
-  0%{ opacity:0; transform:translate(-50%,-50%) scale(.6) rotate(-8deg); }
-  20%{ opacity:1; transform:translate(-50%,-58%) scale(1.05) rotate(2deg); }
-  100%{ opacity:0; transform:translate(-50%,-90%) scale(1) rotate(0); }
-}
-.heart{ position:absolute; left:52%; top:32%; transform:translateX(-50%); font-size:24px; line-height:1; opacity:0; pointer-events:none; }
-.heart.float{ animation: heart-up .85s ease-out forwards; }
-@keyframes heart-up{
-  0%{ transform:translate(-50%,0) scale(.9); opacity:0; }
-  15%{ opacity:1; }
-  70%{ transform:translate(-50%,-28px) scale(1.08); }
-  100%{ transform:translate(-50%,-44px) scale(1); opacity:0; }
-}
-.thought{
-  position:absolute; left:42%; top:-18px; background:#2f2f2f; color:#fff;
-  font-size:.95rem; line-height:1; padding:6px 10px 7px; border-radius:12px; white-space:nowrap;
-  opacity:0; transform:translateY(6px) scale(.98); pointer-events:none; z-index:12;
-}
-.thought::after{ content:""; position:absolute; left:12px; bottom:-6px; width:10px; height:10px; background:#2f2f2f; transform:rotate(45deg); border-radius:2px; }
-.thought.show{ animation: riseIn .22s ease-out forwards, hold 2s linear .22s forwards, fadeOut .28s ease 2.22s forwards; }
-@keyframes riseIn{ to{ opacity:1; transform:translateY(0) scale(1);} }
-@keyframes hold{ to{ opacity:1; } }
-@keyframes fadeOut{ to{ opacity:0; } }
-
-/* ====== Mobile banner ====== */
-.mobile-banner{ display:none; }
-
-@media (max-width:780px){
-  /* account for notches: pick the larger of 40px or safe-area top + 8px */
-  :root{ --mb-h: max(40px, calc(env(safe-area-inset-top, 0px) + 8px)); }
-
-  .mobile-banner{
-    display:flex;
-    position: fixed;
-    inset: 0 0 auto 0;              /* top:0; right:0; bottom:auto; left:0  ✅ */
-    height: var(--mb-h);
-    align-items: center;
-    justify-content: center;
-    padding: 0 24px;
-
-    white-space: nowrap;            /* keep it on one line */
-    overflow: hidden;
-    text-overflow: ellipsis;
-
-    background: rgba(255,255,255,.5);
-    border-bottom: 1px solid #2f3d30;
-    z-index: 1000;
-    -webkit-backdrop-filter: blur(4px);
-    backdrop-filter: blur(4px);
-  }
-
-  .mobile-banner__inner{
-    width: 100%;
-    text-align: center;
-    font-size: .95rem;
-    padding: 0;                     /* parent handles padding */
-  }
-
-  /* offset the hero so it isn't covered by the fixed banner */
-  .header-content{
-    padding-top: calc(var(--mb-h) + clamp(16px, 6vh, 64px));
-  }
+.chips{ display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+.chip{
+  background: #1f1f1f;
+  color: #fff;
+  font-size: .9rem;
+  padding: .35rem .65rem;
+  border-radius: 999px;
+  white-space: nowrap;
 }
 
+.footer{ color: var(--sub); font-size: .9rem; margin-top: 10px; }
 
-/* ====== Horizontal scroll row ====== */
+
+  /* ====== Mobile banner ====== 
+  .mobile-banner{ display:none; }
+
+  @media (max-width:780px){
+    :root{ --mb-h: max(40px, calc(env(safe-area-inset-top, 0px) + 8px)); }
+
+    .mobile-banner{
+      display:flex;
+      position: fixed;
+      inset: 0 0 auto 0;              
+      height: var(--mb-h);
+      align-items: center;
+      justify-content: center;
+      padding: 0 24px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      background: rgba(255,255,255,.5);
+      border-bottom: 1px solid #2f3d30;
+      z-index: 1000;
+      -webkit-backdrop-filter: blur(4px);
+      backdrop-filter: blur(4px);
+
+      pointer-events: none;
+    }
+    .mobile-banner__inner{ pointer-events: auto; }
+
+
+    .header-content{ padding-top: calc(var(--mb-h) + clamp(16px, 6vh, 64px)); }
+
+    h1{ font-size:2.2em; }          
+    .feature{ padding-top: 72px; }
+  } */
+
+  /* ====== Horizontal scroll row ====== */
 .scrollmenu{
   display:flex; gap:12px;
   padding-block: 8px 14px;
@@ -269,263 +387,203 @@ a:hover{ color: var(--accent-2); }
 }
 
 
-/* ====== Responsive knobs ====== */
-@media (max-width:780px){
-  :root{ --catW: 210px; --catH: 118px; --overlap: 68px; --perchPad: 36px; }
-  h1{ font-size: 2.2em; }
-  .feature{ padding-top: 60px; }
-  .heart{ font-size:22px; top:32%; }
-  .thought{ left:62%; top:-16px; font-size:.9rem; }
-}
-@media (max-width:420px){
-  :root{ --catW: 180px; --catH: 102px; --overlap: 56px; --perchPad: 34px; }
-  .feature{ padding-top: 58px; }
-  .thought{ left:60%; }
-}
 
-/* Warm-up (preload images by referencing them) */
-.preload{
-  position:absolute; left:-9999px; width:0; height:0; overflow:hidden;
-  background-image: var(--cat-grey-awake), var(--cat-white-ears);
-}
+  /* Section heading alignment */
+  .work-experience h2{ margin: 0 0 16px; }
 
-/* Section heading alignment (no manual left margins) */
-.work-experience h2{ margin: 0 0 16px; }
+  /* Underlined, centered anchor under feature (no bleed) */
+  .cta-scroll{
+    display: inline-block;
+    width: auto;
+    margin: 16px auto 28px;
+    line-height: 1.2;
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset:.2em;
+    transition:color .15s ease, text-decoration-color .15s ease;
+    max-width: 100%;
+  }
+  .cta-scroll:hover{ color: var(--accent-2); }
+  .cta-scroll:focus-visible{ outline:2px dashed var(--accent-2); outline-offset:3px; }
 
-/* Smooth scroll, but respect reduced-motion */
-html { scroll-behavior: smooth; }
-@media (prefers-reduced-motion: reduce){
-  html { scroll-behavior: auto; }
-}
+  /* Anchor target lands below fixed banner and avoids collapsed margins */
+  #work-experiences{
+    scroll-margin-top: calc(var(--mb-h) + 16px);
+    padding-top: 4px;
+    max-width: 100%;
+  }
 
-/* The button */
-/* Underlined, centered anchor */
-.cta-scroll{
-  display: block;                 /* lets us center with auto margins */
-  width: max-content;             /* shrink to text width */
-  margin: 12px auto 24px;         /* centers under the feature */
+  @media (max-width:420px){
+    :root{ --catW:180px; --catH:102px; --overlap:56px; --perchPad:34px; }
+    .feature{ padding-top:70px; }
+  }
 
-  background: none;
-  border: 0;
-  box-shadow: none;
-  padding: 0;
-
-  color: var(--accent);
-  text-decoration: underline;
-  text-underline-offset: .2em;
-  text-decoration-skip-ink: auto;
-
-  transition: color .15s ease, text-decoration-color .15s ease;
-}
-
-.cta-scroll:hover{
-  color: var(--accent-2);
-  text-decoration-color: currentColor;
-}
-
-/* Keyboard focus stays obvious */
-.cta-scroll:focus-visible{
-  outline: 2px dashed var(--accent-2);
-  outline-offset: 3px;
-}
-
-
-/* Ensure the target isn’t hidden behind the fixed mobile banner */
-.work-experiences{
-  scroll-margin-top: calc(var(--mb-h) + 16px);
-}
-
-/* Centers horizontally regardless of flex/grid on the parent */
-.cta-scroll{
-  display: block;            /* becomes a block so margins apply */
-  width: max-content;        /* shrink to fit text */
-  margin: 12px auto 24px;    /* auto left/right = centered */
-}
-
-</style>
-
+  /* Warm-up (preload imgs by referencing them) */
+  .preload{
+    position:absolute; left:-9999px; width:0; height:0; overflow:hidden;
+    background-image: var(--cat-grey-awake), var(--cat-white-ears);
+  }
+  </style>
 </head>
 <body>
   <div class="preload" aria-hidden="true"></div>
-  <!-- Mobile-only banner -->
-<div class="mobile-banner">
-  <div class="mobile-banner__inner">
-    not mobile-optimized. dont judge me i'm just a designer
-  </div>
-</div>
 
-    <main class="wrap">
-      <div class="header-content">
-        <div class="badge">
-          𐚁₊⊹ howdy, i’m hanna! pet my cats or
-          <a href="https://drive.google.com/file/d/1cfrqUK9YkiXWikKcWnRF8g_JDfkuf5zc/view"
-            target="_blank" rel="noopener noreferrer">view my resume</a>
+  <!-- Mobile-only banner 
+  <div class="mobile-banner">
+    <div class="mobile-banner__inner">
+      not 100% mobile-optimized!!
+    </div>
+  </div>-->
+
+  <main class="wrap">
+    <div class="header-content">
+      <div class="badge">
+        𐚁₊⊹ howdy, i’m hanna! pet my cats or
+        <a href="https://drive.google.com/file/d/1cfrqUK9YkiXWikKcWnRF8g_JDfkuf5zc/view" target="_blank" rel="noopener noreferrer">view my resume</a>
+      </div>
+
+      <h1>austin-based designer uncovering intuitive &amp; enjoyable experiences in complex systems ₊˚⊹</h1>
+
+      <p class="lead">
+        currently at ??
+        previously:
+        <a href="https://www.leveltenenergy.com/" target="_blank" rel="noopener">LevelTen Energy</a>,
+        <a href="https://data.world/home/" target="_blank" rel="noopener">data.world</a>,
+        <a href="https://www.mcmaster.com/" target="_blank" rel="noopener">McMaster-Carr</a>.
+      </p>
+
+      <section class="feature">
+        <!-- Cats perched and overlapped -->
+        <div class="cats" aria-hidden="true">
+          <div class="cat cat--grey" style="--x:6px; --y:12px">
+            <button aria-label="grey cat — hover to wake, click to grumble"></button>
+          </div>
+          <div class="cat cat--white" style="--x:-4px; --y:12px">
+            <button aria-label="white cat — hover to perk ears, click for heart"></button>
+            <div class="heart" aria-hidden="true">❤️</div>
+            <div class="thought" aria-hidden="true"></div>
+          </div>
         </div>
 
-        <h1>austin-based designer uncovering intuitive & enjoyable experiences in complex systems ₊˚⊹</h1>
+        <h2>some things I especially like</h2>
+        <div class="chips" role="list" aria-label="interests">
+          <span class="chip" role="listitem">technical spaces</span>
+          <span class="chip" role="listitem">flexbox</span>
+          <span class="chip" role="listitem">inspect tools</span>
+          <span class="chip" role="listitem">inclusive design</span>
+          <span class="chip" role="listitem">sociological framing</span>
+          <span class="chip" role="listitem">non-traditional interfaces</span>
+          <span class="chip" role="listitem">systems design</span>
+          <span class="chip" role="listitem">my cats ≽^- ˓  -^≼</span>
+        </div>
+      </section>
 
-        <p class="lead">
-          currently at ??
-          previously: <a href="https://www.leveltenenergy.com/" target="_blank" rel="noopener">LevelTen Energy</a>, <a href="https://data.world/home/" target="_blank" rel="noopener">data.world</a>,
-          <a href="https://www.mcmaster.com/" target="_blank" rel="noopener">McMaster-Carr</a>.
-        </p>
-
-        <section class="feature">
-          <!-- Cats perched and overlapped -->
-          <div class="cats" aria-hidden="true">
-            <!-- Tobi (grey) -->
-            <div class="cat cat--grey" style="--x:6px; --y:12px">
-              <button aria-label="grey cat — hover to wake, click to grumble"></button>
-            </div>
-
-            <!-- Kono (white) -->
-            <div class="cat cat--white" style="--x:-4px; --y:12px">
-              <button aria-label="white cat — hover to perk ears, click for heart"></button>
-              <div class="heart" aria-hidden="true">❤️</div>
-              <div class="thought" aria-hidden="true"></div>
-            </div>
-          </div>
-
-          <h2>some things I especially like</h2>
-          <div class="chips" role="list" aria-label="interests">
-            <span class="chip" role="listitem">technical spaces</span>
-            <span class="chip" role="listitem">flexbox</span>
-            <span class="chip" role="listitem">inspect tools</span>
-            <span class="chip" role="listitem">inclusive design</span>
-            <span class="chip" role="listitem">sociological framing</span>
-            <span class="chip" role="listitem">non-traditional interfaces</span>
-            <span class="chip" role="listitem">systems design</span>
-            <span class="chip" role="listitem">my cats ≽^- ˓  -^≼</span>
-          </div>
-        </section>
-              <!-- CTA to work section -->
+      <!-- CTA to work section -->
       <a class="cta-scroll" href="#work-experiences">take me to hanna's work experiences</a>
-      </div>
+    </div>
 
-      <div id="work-experiences" class="work-experience">
-        <h2>⋆˚࿔ work experience →</h2>
-        <section aria-label="Experience">
-          <div class="scrollmenu" role="region" aria-label="Experience">
-            <article class="product-card">
-              <h4>Product Designer @ LevelTen Energy</h4>
-              <p class="dates">Dec 2024 – Aug 2025</p>
-              <ul>
-                <li>Designed for a <strong>$14.8B</strong> energy platform, ensuring alignment across design, product, and engineering.</li>
-                <li>Created interactive <strong>AI-driven</strong> prototypes using Figma Make to accelerate engineering implementation.</li>
-                <li>Refactored design system components to enable <strong>faster variant swapping</strong> and reduce repetitive styling.</li>
-                <li>Standardized announcement patterns in <strong>Userpilot</strong> to support product marketing and improve visibility of new releases.</li>
-              </ul>
-            </article>
+    <div id="work-experiences" class="work-experience">
+      <h2>⋆˚࿔ work experience →</h2>
+      <section aria-label="Experience">
+        <div class="scrollmenu" role="region" aria-label="Experience">
+          <article class="product-card">
+            <h4>Product Designer @ LevelTen Energy</h4>
+            <p class="dates">Dec 2024 – Aug 2025</p>
+            <ul>
+              <li>Designed for a <strong>$14.8B</strong> energy platform, ensuring alignment across design, product, and engineering.</li>
+              <li>Created interactive <strong>AI-driven</strong> prototypes using Figma Make to accelerate engineering implementation.</li>
+              <li>Refactored design system components to enable <strong>faster variant swapping</strong> and reduce repetitive styling.</li>
+              <li>Standardized announcement patterns in <strong>Userpilot</strong> to support product marketing and improve visibility of new releases.</li>
+            </ul>
+          </article>
 
-            <article class="product-card">
-              <h4>Senior Product Designer @ data.world <em>(acquired by ServiceNow)</em></h4>
-              <p class="dates">May 2022 – Dec 2024</p>
-              <ul>
-                <li>Delivered end-to-end designs for a technical SaaS platform used by <strong>1M+ users</strong>.</li>
-                <li>Led design for <strong>generative AI</strong> and <strong>data discovery</strong> features by defining product requirements, aligning stakeholders, and driving design strategy.</li>
-                <li><strong>Boosted fundraising efforts</strong> by designing wireframes for an AI product pivot presented to the board.</li>
-                <li><strong>Increased catalog enrichment by 183%</strong> with summary widgets to visualize related resources.</li>
-                <li>Updated <strong>design system components</strong> across <strong>5 products</strong>, improving consistency and team efficiency.</li>
-              </ul>
-            </article>
+          <article class="product-card">
+            <h4>Senior Product Designer @ data.world <em>(acquired by ServiceNow)</em></h4>
+            <p class="dates">May 2022 – Dec 2024</p>
+            <ul>
+              <li>Delivered end-to-end designs for a technical SaaS platform used by <strong>1M+ users</strong>.</li>
+              <li>Led design for <strong>generative AI</strong> and <strong>data discovery</strong> features by defining product requirements, aligning stakeholders, and driving design strategy.</li>
+              <li><strong>Boosted fundraising efforts</strong> by designing wireframes for an AI product pivot presented to the board.</li>
+              <li><strong>Increased catalog enrichment by 183%</strong> with summary widgets to visualize related resources.</li>
+              <li>Updated <strong>design system components</strong> across <strong>5 products</strong>, improving consistency and team efficiency.</li>
+            </ul>
+          </article>
 
-            <article class="product-card">
-              <h4>UX Designer @ McMaster-Carr</h4>
-              <p class="dates">June 2021 – May 2022</p>
-              <ul>
-                <li>Designed navigation and flows for a <strong>700k+ product</strong> e-commerce platform.</li>
-                <li>Facilitated workshops to improve and document the UX-to-engineering handoff process.</li>
-                <li>Established a <strong>foundational design system</strong> and introduced accessibility guidelines for consistency.</li>
-              </ul>
-            </article>
-          </div>
-        </section>
-      </div>
-      <div>
-        <h2>ᯓ✦ case study previews →</h2>
-        <p>please message me on linkedIn for full case studies.</p>
-        <section aria-label="case studies">
-          <div class="scrollmenu" role="region" aria-label="case studies">
+          <article class="product-card">
+            <h4>UX Designer @ McMaster-Carr</h4>
+            <p class="dates">June 2021 – May 2022</p>
+            <ul>
+              <li>Designed navigation and flows for a <strong>700k+ product</strong> e-commerce platform.</li>
+              <li>Facilitated workshops to improve and document the UX-to-engineering handoff process.</li>
+              <li>Established a <strong>foundational design system</strong> and introduced accessibility guidelines for consistency.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+    </div>
 
-          
-            <article class="product-card">
-              <figure class="product-media">
-                <img
-                  src="/deal-center.png"
-                  alt="levelTen Energy deal center case study"
-                  width="1200" height="675"
-                  loading="lazy" decoding="async">
-              </figure>
+    <div>
+      <h2>ᯓ✦ case study previews →</h2>
+      <p>please message me on linkedIn for full case studies.</p>
+      <section aria-label="case studies">
+        <div class="scrollmenu" role="region" aria-label="case studies">
+          <article class="product-card">
+            <figure class="product-media">
+              <img src="/deal-center.png" alt="levelTen Energy deal center case study" width="1200" height="675" loading="lazy" decoding="async">
+            </figure>
+            <h4>launched a self-service deal management workflow</h4>
+            <p class="dates">levelTen Energy</p>
+            <p>designed a flow for users to quickly find deals they are working on and jump back in to take action.</p>
+            <ul>
+              <li>created the design that connects the entire ecosystem of transaction flow redesigns</li>
+              <li>increased the transparency and ownership of key energy transaction steps on levelTen's platform</li>
+            </ul>
+          </article>
 
-              <h4>launched a self-service deal management workflow</h4>
-              <p class="dates">levelTen Energy</p>
-              <p>designed a flow for users to quickly find deals they are working on and jump back in to take action.</p>
-              <ul>
-                <li>created the design that connects the entire ecosystem of transaction flow redesigns</li>
-                <li>increased the transparency and ownership of key energy transaction steps on levelTen's platform</li>
-              </ul>
-            </article>
-            
-            <article class="product-card">
-              <figure class="product-media">
-                <img
-                  src="/ddw-search.png"
-                  alt="data.world search case study"
-                  width="1200" height="675"
-                  loading="lazy" decoding="async">
-              </figure>
+          <article class="product-card">
+            <figure class="product-media">
+              <img src="/ddw-search.png" alt="data.world search case study" width="1200" height="675" loading="lazy" decoding="async">
+            </figure>
+            <h4>faster discovery through a redesigned search experience</h4>
+            <p class="dates">data.world</p>
+            <p>introduced robust filtering and preview interactions to decrease the amount of time it takes a customer to find a resource of interest.</p>
+            <ul>
+              <li>empowered the sales team with complex search demos</li>
+              <li>reduced churn rate for high-risk customers</li>
+            </ul>
+          </article>
 
-              <h4>faster discovery through a redesigned search experience</h4>
-              <p class="dates">data.world</p>
-              <p>introduced robust filtering and preview interactions to decrease the amount of time it takes a customer to find a resource of interest.</p>
-              <ul>
-                <li>empowered the sales team with complex search demos</li>
-                <li>reduced churn rate for high-risk customers</li>
-              </ul>
-            </article>
+          <article class="product-card">
+            <figure class="product-media">
+              <img src="/bulk-edit.png" alt="data.world bulk actions case study" width="1200" height="675" loading="lazy" decoding="async">
+            </figure>
+            <h4>enabled informed and intuitive bulk actions</h4>
+            <p class="dates">data.world</p>
+            <p>created the first true bulk experience for our customers through a stepped flow with search and filtering confirmation features.</p>
+            <ul>
+              <li>unlocked workflows for resource collections which averaged 10k resources</li>
+              <li>reduced churn rate for high-risk customers - 50% of high NDR risk customers cited bulk operations as a major issue</li>
+            </ul>
+          </article>
 
-            <article class="product-card">
-              <figure class="product-media">
-                <img
-                  src="/bulk-edit.png"
-                  alt="data.world bulk actions case study"
-                  width="1200" height="675"
-                  loading="lazy" decoding="async">
-              </figure>
+          <article class="product-card">
+            <figure class="product-media">
+              <img src="/info-rich.png" alt="data.world catalog enrichment case study" width="1200" height="675" loading="lazy" decoding="async">
+            </figure>
+            <h4>increased catalog enrichment by 183%</h4>
+            <p class="dates">data.world</p>
+            <p>balanced information density with scannability using tables and summary cards to support relationships between catalog resources.</p>
+            <ul>
+              <li>520% increase in resources related per session and 183% increase in overall catalog enrichment</li>
+              <li>resolved an adoption blocker for key customers &amp; prevented 2 major companies from churning</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+    </div>
 
-              <h4>enabled informed and intuitive bulk actions</h4>
-              <p class="dates">data.world</p>
-              <p>created the first true bulk experience for our customers through a stepped flow with search and filtering confirmation features.</p>
-              <ul>
-                <li>unlocked workflows for resource collections which averaged 10k resources</li>
-                <li>reduced churn rate for high-risk customers - 50% of high NDR risk customers cited bulk operations as a major issue</li>
-              </ul>
-            </article>
-
-            <article class="product-card">
-              <figure class="product-media">
-                <img
-                  src="/info-rich.png"
-                  alt="data.world catalog enrichment case study"
-                  width="1200" height="675"
-                  loading="lazy" decoding="async">
-              </figure>
-
-              <h4>increased catalog enrichment by 183%</h4>
-              <p class="dates">data.world</p>
-              <p>balanced information density with scannability using tables and summary cards to support relationships between catalog resources.</p>
-              <ul>
-                <li>520% increase in resources related per session and 183% increase in overall catalog enrichment </li>
-                <li>resolved an adoption blocker for key customers & prevented 2 major companies from churning</li>
-              </ul>
-            </article>
-            
-
-          </div>
-          </section>
-      </div>
-      <p class="footer">sept. 2025</p>
-    </main>
+    <p class="footer">sept. 2025</p>
+  </main>
 
   <script>
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -542,23 +600,33 @@ html { scroll-behavior: smooth; }
     });
 
     // Tobi (grey): ⁉️ where you click
-    const grey = document.querySelector('.cat--grey');
+  const grey = document.querySelector('.cat--grey');
+  if (grey) {
     const greyBtn = grey.querySelector('button');
-    greyBtn.addEventListener('click', (e) => {
-      const r = greyBtn.getBoundingClientRect();
-      const x = e.clientX - r.left, y = e.clientY - r.top;
-      const s = document.createElement('span');
-      s.className = 'boom'; s.textContent = '⁉️';
-      s.style.left = x + 'px'; s.style.top = y + 'px';
-      greyBtn.parentElement.appendChild(s);
-      s.addEventListener('animationend', () => s.remove(), {once:true});
+
+    // Reuse existing .boom or create one once
+    let boom = grey.querySelector('.boom');
+    if (!boom) {
+      boom = document.createElement('span');
+      boom.className = 'boom';
+      boom.textContent = '⁉️';
+      // append to .cat, not the button—keeps stacking identical to .heart
+      grey.appendChild(boom);
+    }
+
+    greyBtn?.addEventListener('click', () => {
+      boom.classList.remove('float');
+      boom.style.left = (48 + Math.random()*6) + '%'; // same jitter as heart
+      void boom.offsetWidth; // reflow to restart animation
+      boom.classList.add('float');
     });
+  }
 
     // Kono: occasional thought bubble (auto)
     const thought = white.querySelector('.thought');
     const foods = ['🍣','🐟','🍗','🥟','🧀','🍤','🍜'];
     function scheduleThought(){
-      const delay = 8000 + Math.random()*8000; // 8–16s
+      const delay = 6000;
       setTimeout(() => {
         if (!thought) return;
         thought.textContent = reduceMotion ? '…'
