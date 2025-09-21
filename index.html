@@ -16,6 +16,9 @@
   <link rel="preload" as="image" href="kono-chillin.png">
   <link rel="preload" as="image" href="kono-happy.png">
 
+  <!-- animate.css -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
   <style>
   /* ====== Design tokens ====== */
   :root{
@@ -134,7 +137,9 @@
   /* ====== Feature frame ====== */
   .feature{
     position: relative;
-    align-self: stretch;
+    flex: 0 0 100%;   /* take a full line */
+    width: 100%;
+    align-self: auto;
     border: 3px solid #000; border-radius: 22px;
     padding: clamp(24px, 3.5vw, 36px) clamp(18px, 3vw, 28px);
     margin-block: max(28px, calc((var(--catH) - var(--perchPad)) + 16px)) 24px;
@@ -391,20 +396,46 @@
   /* Section heading alignment */
   .work-experience h2{ margin: 0 0 16px; }
 
-  /* Underlined, centered anchor under feature (no bleed) */
-  .cta-scroll{
-    display: inline-block;
-    width: auto;
-    margin: 16px auto 28px;
-    line-height: 1.2;
-    color: var(--accent);
-    text-decoration: underline;
-    text-underline-offset:.2em;
-    transition:color .15s ease, text-decoration-color .15s ease;
-    max-width: 100%;
-  }
-  .cta-scroll:hover{ color: var(--accent-2); }
-  .cta-scroll:focus-visible{ outline:2px dashed var(--accent-2); outline-offset:3px; }
+  /* Existing styles */
+.cta-scroll{
+  display:inline-block;
+  width:auto;
+  margin:16px auto 28px;
+  line-height:1.2;
+  color:var(--accent);
+  text-decoration:underline;
+  text-underline-offset:.2em;
+  transition:color .15s ease, text-decoration-color .15s ease;
+  max-width:100%;
+  position:relative;         /* anchor sparkles to this */
+  overflow:visible;          /* let sparkles escape */
+}
+.cta-scroll:hover{ color:var(--accent-2); }
+.cta-scroll:focus-visible{ outline:2px dashed var(--accent-2); outline-offset:3px; }
+
+/* Sparkle particles */
+.sparkle {
+  position:absolute;
+  pointer-events:none;
+  font-size:12px;
+  line-height:1;
+  opacity:0;
+  will-change: transform, opacity;
+  user-select:none;
+}
+
+/* Float-up + drift animation */
+@keyframes sparkle-float {
+  0%   { transform: translate(var(--sx,0), var(--sy,0)) scale(1) rotate(0turn); opacity:0; }
+  10%  { opacity:1; }
+  100% { transform: translate(var(--dx,0), var(--dy,-40px)) scale(0.9) rotate(var(--rot, .25turn)); opacity:0; }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .sparkle { animation: none !important; }
+}
+
 
   /* Anchor target lands below fixed banner and avoids collapsed margins */
   #work-experiences{
@@ -423,6 +454,11 @@
     position:absolute; left:-9999px; width:0; height:0; overflow:hidden;
     background-image: var(--cat-grey-awake), var(--cat-white-ears);
   }
+
+  .chip:hover {
+  animation-name: pulse;   /* Animate.css defines this keyframe */
+  animation-duration: 1s;  /* default is 1s */
+}
   </style>
 </head>
 <body>
@@ -467,19 +503,19 @@
 
         <h2>some things I especially like</h2>
         <div class="chips" role="list" aria-label="interests">
-          <span class="chip" role="listitem">technical spaces</span>
-          <span class="chip" role="listitem">flexbox</span>
-          <span class="chip" role="listitem">inspect tools</span>
-          <span class="chip" role="listitem">inclusive design</span>
-          <span class="chip" role="listitem">sociological framing</span>
-          <span class="chip" role="listitem">non-traditional interfaces</span>
-          <span class="chip" role="listitem">systems design</span>
-          <span class="chip" role="listitem">my cats ≽^- ˓  -^≼</span>
+          <span class="chip animate__animated" role="listitem">technical spaces</span>
+          <span class="chip animate__animated" role="listitem">flexbox</span>
+          <span class="chip animate__animated" role="listitem">inspect tools</span>
+          <span class="chip animate__animated" role="listitem">inclusive design</span>
+          <span class="chip animate__animated" role="listitem">sociological framing</span>
+          <span class="chip animate__animated" role="listitem">non-traditional interfaces</span>
+          <span class="chip animate__animated" role="listitem">systems design</span>
+          <span class="chip animate__animated" role="listitem">my cats ≽^- ˓  -^≼</span>
         </div>
       </section>
 
       <!-- CTA to work section -->
-      <a class="cta-scroll" href="#work-experiences">take me to hanna's work experiences</a>
+      <a class="cta-scroll" href="#work-experiences">take me to hanna's work experiences ↓</a>
     </div>
 
     <div id="work-experiences" class="work-experience">
@@ -582,7 +618,7 @@
       </section>
     </div>
 
-    <p class="footer">sept. 2025</p>
+    <p class="footer">sept. 2025 // it's silly, it's janky, it's a continous hobby project!</p>
   </main>
 
   <script>
@@ -636,6 +672,82 @@
       }, delay);
     }
     scheduleThought();
+
+    // Sparkly hover for .cta-scroll
+(() => {
+  const GLYPHS = ['·', '⁺', '✧', '⋆', '·', '⁺', '˖', '·', '✧'];
+  const MAX_BURST = 10;          // particles per burst
+  const DURATION = [600, 1100];  // ms range
+  const RANGE_X = 60;            // horizontal drift range (px)
+  const RANGE_Y = 60;            // upward drift range (px)
+  const COOLDOWN = 200;          // throttle between bursts (ms)
+
+  const anchors = document.querySelectorAll('.cta-scroll');
+  anchors.forEach((a) => {
+    let last = 0;
+
+    const burst = (originX = null) => {
+      const now = performance.now();
+      if (now - last < COOLDOWN) return;
+      last = now;
+
+      const rect = a.getBoundingClientRect();
+      const baseX = originX ?? rect.width / 2; // mouse x inside the link or center for keyboard
+      const baseY = 0; // top edge
+
+      for (let i = 0; i < MAX_BURST; i++) {
+        const s = document.createElement('span');
+        s.className = 'sparkle';
+        s.textContent = GLYPHS[(Math.random() * GLYPHS.length) | 0];
+
+        // Randomize start offsets near the top edge
+        const sx = baseX + (Math.random() * 24 - 12);
+        const sy = baseY;
+
+        // Randomize drift
+        const dx = sx + (Math.random() * RANGE_X - RANGE_X / 2);
+        const dy = sy - (Math.random() * RANGE_Y + 30);
+        const rot = (Math.random() * 0.6 + 0.1) + 'turn';
+        const dur = Math.random() * (DURATION[1] - DURATION[0]) + DURATION[0];
+
+        s.style.left = sx + 'px';
+        s.style.top = sy + 'px';
+        s.style.setProperty('--sx', '0px');
+        s.style.setProperty('--sy', '0px');
+        s.style.setProperty('--dx', (dx - sx) + 'px');
+        s.style.setProperty('--dy', (dy - sy) + 'px');
+        s.style.setProperty('--rot', rot);
+        s.style.animation = `sparkle-float ${dur}ms ease-out forwards`;
+
+        // Optional: tint to match your theme
+        // s.style.color = getComputedStyle(a).color;
+
+        a.appendChild(s);
+        s.addEventListener('animationend', () => s.remove(), { once: true });
+      }
+    };
+
+    // Mouse hover: burst near cursor along the top of the link
+    a.addEventListener('mouseenter', (e) => {
+      const x = e.offsetX ?? a.getBoundingClientRect().width / 2;
+      burst(x);
+    });
+
+    // While hovering, add smaller bursts occasionally
+    let hoverTimer;
+    a.addEventListener('mousemove', (e) => {
+      if (hoverTimer) return;
+      hoverTimer = requestAnimationFrame(() => {
+        burst(e.offsetX);
+        hoverTimer = null;
+      });
+    });
+
+    // Keyboard focus: burst from center
+    a.addEventListener('focus', () => burst());
+  });
+})();
+
   </script>
 </body>
 </html>
