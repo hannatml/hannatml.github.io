@@ -9,7 +9,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Akaya+Telivigala&family=Sen:wght@400..800&family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet"/>
-
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono&display=swap" rel="stylesheet">
+  
   <!-- Preload images -->
   <link rel="preload" as="image" href="tobi-asleep.png">
   <link rel="preload" as="image" href="tobi-awake.png">
@@ -109,6 +110,7 @@
   text-wrap: balance;        /* more even line lengths (modern browsers) */
   line-height: 1.2;
 
+  font-family: "Geist Mono", monospace;
   font-size: .95rem; color: var(--sub);
   background: rgba(255,255,255,.5);
   border: 1px dashed #1a1a1a; border-radius: 999px;
@@ -327,7 +329,7 @@
   padding:16px 18px; color:#111827; font-size:.9rem;
 }
 .product-card h4{ margin:0 0 8px; font-weight:700; font-size:1.05rem; line-height:1.2; }
-.product-card .dates{ margin:0 0 6px; color:#6b7280; font-size:.75rem; letter-spacing:.02em; text-transform:uppercase; }
+.product-card .dates{ margin:0 0 6px; color:#6b7280; font-family: "Geist Mono", monospace; font-size:.75rem; letter-spacing:.02em; text-transform:uppercase; }
 .product-card ul{ margin:8px 0 0; padding-left:18px; }
 .product-card li{ margin:6px 0; }
 .product-card strong{ font-weight:800; }
@@ -360,6 +362,7 @@
 
   /* Existing styles */
 .cta-scroll{
+  font-family: "Geist Mono", monospace;
   display:inline-block;
   width:auto;
   margin:16px auto 28px;
@@ -436,9 +439,9 @@
       <h1>raleigh-based designer uncovering intuitive &amp; enjoyable experiences in complex systems ₊˚⊹</h1>
 
       <p class="lead">
-        currently at <a href="https://www.q2.com/" target="_blank" rel="noopener">Q2</a>.
+        currently at <a href="https://www.leveltenenergy.com/" target="_blank" rel="noopener">LevelTen Energy</a>.
         previously:
-        <a href="https://www.leveltenenergy.com/" target="_blank" rel="noopener">LevelTen Energy</a>,
+        <a href="https://www.q2.com/" target="_blank" rel="noopener">Q2</a>,
         <a href="https://data.world/home/" target="_blank" rel="noopener">data.world</a>,
         <a href="https://www.mcmaster.com/" target="_blank" rel="noopener">McMaster-Carr</a>.
       </p>
@@ -471,15 +474,24 @@
 
       <!-- CTA to work section -->
       <a class="cta-scroll" href="#work-experiences">take me to hanna's work experiences ↓</a>
-    </div>
+    </div>    
 
     <div id="work-experiences" class="work-experience">
       <h2>⋆˚࿔ work experience →</h2>
       <section aria-label="Experience">
         <div class="scrollmenu" role="region" aria-label="Experience">
+
+          <article class="product-card">
+            <h4>Product Designer @ LevelTen Energy</h4>
+            <p class="dates">July 2026 – Present</p>
+            <ul>
+              <li>Check back later!</li>
+            </ul>
+          </article>
+          
           <article class="product-card">
             <h4>UX Designer @ Q2</h4>
-            <p class="dates">Sept 2025 – Present</p>
+            <p class="dates">Sept 2025 – July 2026</p>
             <ul>
               <li>Sole designer for the PrecisionLender platform, managing design operations and roadmapping for 3 product areas</li>
             </ul>
